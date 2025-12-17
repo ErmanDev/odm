@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/menu_dashboard" />
+    
+    <item
+        android:id="@+id/nav_edit_profile"
+        android:icon="@drawable/ic_edit_profile"
+        android:title="@string/menu_edit_profile" />
+    
+    <item
+        android:id="@+id/nav_clock_in_out"
+        android:icon="@drawable/ic_clock"
+        android:title="@string/menu_clock_in_out" />
+    
+    <item
+        android:id="@+id/nav_duty_schedule"
+        android:icon="@drawable/ic_schedule"
+        android:title="@string/menu_duty_schedule" />
+    
+    <item
+        android:id="@+id/nav_notifications"
+        android:icon="@drawable/ic_notifications"
+        android:title="@string/menu_notifications" />
+    
+    <group android:id="@+id/nav_group_logout">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_logout" />
+    </group>
+</menu>
+

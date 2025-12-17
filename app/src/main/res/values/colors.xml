@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Theme Colors -->
+    <color name="primary_button">#0E4E57</color>
+    <color name="background_white">#FFFFFF</color>
+    
+    <!-- Additional Colors -->
+    <color name="text_primary">#FF212121</color>
+    <color name="text_secondary">#FF757575</color>
+    <color name="hint_color">#FF9E9E9E</color>
+    <color name="error_color">#FFFF0000</color>
+    <color name="button_text">#FFFFFFFF</color>
+    
+    <!-- Dashboard Colors -->
+    <color name="dashboard_header_bg">#0E4E57</color>
+    <color name="dashboard_card_bg">#FFFFFFFF</color>
+    <color name="metric_value_text">#FFFFFFFF</color>
+    <color name="metric_label_text">#B3FFFFFF</color>
+    <color name="dashboard_background">#F5F5F5</color>
+</resources>

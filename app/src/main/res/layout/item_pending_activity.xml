@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/item_row_background"
+    android:padding="12dp"
+    android:minHeight="56dp"
+    android:gravity="center_vertical">
+
+    <!-- Officer Name Column -->
+    <TextView
+        android:id="@+id/textViewOfficerName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Officer Name"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp" />
+
+    <!-- Vertical Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp" />
+
+    <!-- Activity Column -->
+    <TextView
+        android:id="@+id/textViewActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Activity"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp" />
+
+    <!-- Vertical Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp" />
+
+    <!-- Status Column -->
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Pending"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:gravity="center"
+        android:background="@drawable/status_pending_bg"
+        android:minWidth="80dp" />
+
+</LinearLayout>
+

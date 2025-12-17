@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dashboard_background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".MainActivity">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:id="@+id/headerSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/dashboard_header_bg"
+            android:padding="24dp"
+            android:paddingTop="32dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Greeting -->
+            <TextView
+                android:id="@+id/textViewGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello, Admin"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Monday, January 22, 2025"
+                android:textColor="@color/metric_label_text"
+                android:textSize="14sp" />
+
+            <!-- Metrics Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <!-- Late Check In Metric -->
+                <include
+                    android:id="@+id/metricLateCheckIn"
+                    layout="@layout/item_metric_card" />
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/metric_label_text"
+                    android:layout_marginVertical="8dp" />
+
+                <!-- Request for Absence Metric -->
+                <include
+                    android:id="@+id/metricRequestAbsence"
+                    layout="@layout/item_metric_card" />
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/metric_label_text"
+                    android:layout_marginVertical="8dp" />
+
+                <!-- Present Today Metric -->
+                <include
+                    android:id="@+id/metricPresentToday"
+                    layout="@layout/item_metric_card" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Main Content Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contentSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintTop_toBottomOf="@id/headerSection"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Grid Layout for Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- Row 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:baselineAligned="false">
+
+                    <include
+                        android:id="@+id/cardOfficerList"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+
+                    <include
+                        android:id="@+id/cardEditProfile"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp" />
+
+                </LinearLayout>
+
+                <!-- Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:baselineAligned="false">
+
+                    <include
+                        android:id="@+id/cardDutyAssignment"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+
+                    <include
+                        android:id="@+id/cardPendingActivities"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp" />
+
+                </LinearLayout>
+
+                <!-- Row 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:baselineAligned="false">
+
+                    <include
+                        android:id="@+id/cardAttendanceTracking"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp" />
+
+                    <include
+                        android:id="@+id/cardNotifications"
+                        layout="@layout/item_dashboard_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Footer Button -->
+        <Button
+            android:id="@+id/buttonAllDepartment"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
+            android:text="@string/all_department"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/dashboard_header_bg"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contentSection" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

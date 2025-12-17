@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dashboard_background"
+    tools:context=".OfficerListManagementActivity">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/headerSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/dashboard_header_bg"
+        android:padding="24dp"
+        android:paddingTop="32dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Content Section -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:background="@color/dashboard_card_bg"
+        app:layout_constraintTop_toBottomOf="@id/headerSection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Section Title Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/dashboard_card_bg"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/dashboard_header_bg">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/officer_list_management"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:padding="16dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Search Bar and Controls Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical">
+
+                <!-- Search Bar -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:boxBackgroundMode="filled"
+                    app:boxBackgroundColor="@color/dashboard_background"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:startIconDrawable="@android:drawable/ic_menu_search"
+                    app:startIconTint="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/hint_color"
+                        android:textSize="16sp"
+                        android:minHeight="48dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Dropdown Indicator -->
+                <ImageView
+                    android:id="@+id/imageViewDropdown"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/arrow_down_float"
+                    android:tint="@color/text_secondary"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Dropdown" />
+
+                <!-- Add Name Button -->
+                <Button
+                    android:id="@+id/buttonAddName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Add Name"
+                    android:textColor="@color/button_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/dashboard_header_bg"
+                    android:elevation="4dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:drawableEnd="@drawable/ic_add"
+                    android:drawablePadding="8dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+            <!-- Category Title -->
+            <TextView
+                android:id="@+id/textViewCategoryTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sanitation Office"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Officer List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewOfficers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

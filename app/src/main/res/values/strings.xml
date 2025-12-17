@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">OfficerDutyManagement</string>
+    
+    <!-- Dashboard Strings -->
+    <string name="dashboard_greeting">Hello, %1$s</string>
+    <string name="late_check_in">Late Check In</string>
+    <string name="request_for_absence">Request for Absence</string>
+    <string name="present_today">Present Today</string>
+    <string name="officer_list_management">Officer List Management</string>
+    <string name="edit_employee_profile">Edit Employee Profile</string>
+    <string name="duty_assignment">Duty Assignment</string>
+    <string name="pending_activities">Pending Activities</string>
+    <string name="attendance_performance_tracking">Attendance and Performance Tracking</string>
+    <string name="notifications_alert">Notifications and Alert</string>
+    <string name="all_department">All Department</string>
+    <string name="edit">Edit</string>
+    
+    <!-- Officer Dashboard Strings -->
+    <string name="check_in">Check In</string>
+    <string name="check_out">Check Out</string>
+    <string name="my_duty_schedule">My Duty Schedule</string>
+    <string name="view_full_schedule">View Full Schedule</string>
+    <string name="request_absence">Request Absence</string>
+    <string name="date">Date</string>
+    <string name="reason">Reason</string>
+    <string name="type_here">Type here</string>
+    <string name="upload_your_proof">Upload Your Proof</string>
+    <string name="choose_file">Choose file</string>
+    <string name="notification">Notification</string>
+    <string name="on_going_activities">On Going Activities</string>
+    <string name="see_more">See more</string>
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    
+    <!-- Navigation Drawer Menu Items -->
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_edit_profile">Edit Employee Profile</string>
+    <string name="menu_clock_in_out">Clock In/Out</string>
+    <string name="menu_duty_schedule">Duty Schedule</string>
+    <string name="menu_notifications">Notifications</string>
+    <string name="menu_logout">Logout</string>
+    
+    <!-- Duty Schedule Screen -->
+    <string name="duty_schedule_title">My Duty Schedule</string>
+    
+    <!-- Notifications Screen -->
+    <string name="notifications_title">Notifications</string>
+
+    <!-- Duty Assignment Screen (Admin) -->
+    <string name="duty_assignment_title">Duty Assignment</string>
+    <string name="duty_assignment_subtitle">Manage daily duty allocations and statuses</string>
+    <string name="assign_new_duty">Assign New Duty</string>
+    <string name="assign_new_duty_placeholder">Assign New Duty action coming soon</string>
+    <string name="editing_assignment">Editing %1$s</string>
+    <string name="column_date">Date</string>
+    <string name="column_officer">Officer</string>
+    <string name="column_department">Department</string>
+    <string name="column_task_location">Task/Location</string>
+    <string name="column_status">Status</string>
+    <string name="column_action">Action</string>
+
+    <!-- Admin Attendance Tracking -->
+    <string name="attendance_tracking_title">Attendance &amp; Performance Tracking</string>
+    <string name="attendance_tracking_subtitle">Monitor attendance metrics and performance trends</string>
+    <string name="attendance_tracking_placeholder">Attendance tracking dashboard</string>
+
+    <!-- Admin Notifications -->
+    <string name="admin_notifications_title">Notifications &amp; Alerts</string>
+    <string name="admin_notifications_subtitle">Review important updates and alerts</string>
+    <string name="admin_notifications_placeholder">Notifications overview</string>
+
+    <!-- Departments -->
+    <string name="departments_title">All Departments</string>
+    <string name="departments_subtitle">Browse and manage departments</string>
+    <string name="departments_placeholder">Department list</string>
+
+    <!-- Shared Placeholder -->
+    <string name="feature_coming_soon">Feature coming soon</string>
+</resources>

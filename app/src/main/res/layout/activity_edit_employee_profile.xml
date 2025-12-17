@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".EditEmployeeProfileActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dashboard_background"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:id="@+id/headerSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/dashboard_header_bg"
+            android:padding="24dp"
+            android:paddingTop="32dp"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Top Row: Hamburger Menu -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start|center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <!-- Hamburger Menu -->
+                <ImageView
+                    android:id="@+id/imageViewMenu"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_menu"
+                    android:contentDescription="Menu"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_employee_profile"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Profile Picture -->
+            <ImageView
+                android:id="@+id/imageViewProfile"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/ic_profile_placeholder"
+                android:contentDescription="Profile Picture"
+                android:background="@drawable/circle_background" />
+
+            <!-- Employee Name -->
+            <TextView
+                android:id="@+id/textViewEmployeeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Juan Dela Cruz"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Employee ID -->
+            <TextView
+                android:id="@+id/textViewEmployeeId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="ID-ACC-0098"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Profile Details Section -->
+        <LinearLayout
+            android:id="@+id/contentSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/headerSection"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Name Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Name:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="Juan Dela Cruz"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+
+            <!-- Age Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Age:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextAge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="22"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <!-- Employee ID Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Employee ID:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextEmployeeId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="ACC-0098"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <!-- Position Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Position:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextPosition"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="Garbage Collector"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <!-- Department Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Department:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextDepartment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="Sanitation"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <!-- Email Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Email address:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="mahasau@gmail.com"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <!-- Address Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Address:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="P- 13 Hagkol Valencia"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="textPostalAddress" />
+
+            </LinearLayout>
+
+            <!-- Phone Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/profile_field_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Phone number:"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="09542518340"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent"
+                    android:padding="0dp"
+                    android:inputType="phone" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Save Changes Button -->
+        <Button
+            android:id="@+id/buttonSaveChanges"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
+            android:text="Save Changes"
+            android:textColor="@color/button_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/dashboard_header_bg"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contentSection" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_officer"
+        app:menu="@menu/drawer_menu_officer"
+        app:itemIconTint="@color/dashboard_header_bg"
+        app:itemTextColor="@color/text_primary"
+        app:itemBackground="@color/dashboard_card_bg" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+

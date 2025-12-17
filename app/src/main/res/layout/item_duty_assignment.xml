@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/item_row_background"
+    android:padding="12dp"
+    android:minHeight="60dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Jan 20"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:paddingStart="6dp"
+        android:paddingEnd="4dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginHorizontal="4dp" />
+
+    <TextView
+        android:id="@+id/textViewOfficer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="John Doe"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:paddingStart="6dp"
+        android:paddingEnd="4dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginHorizontal="4dp" />
+
+    <TextView
+        android:id="@+id/textViewDepartment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Security"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:paddingStart="6dp"
+        android:paddingEnd="4dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginHorizontal="4dp" />
+
+    <TextView
+        android:id="@+id/textViewTaskLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.4"
+        android:text="Gate Patrol"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:paddingStart="6dp"
+        android:paddingEnd="4dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginHorizontal="4dp" />
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Scheduled"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:gravity="center"
+        android:background="@drawable/status_ongoing_bg"
+        android:maxLines="1" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_secondary"
+        android:layout_marginHorizontal="4dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAction"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:minWidth="64dp"
+        android:text="@string/edit"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:paddingHorizontal="12dp"
+        android:backgroundTint="@color/dashboard_header_bg"
+        app:cornerRadius="18dp" />
+
+</LinearLayout>
+
