@@ -137,55 +137,6 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Check In/Check Out Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Check In/\nCheck Out"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <Button
-                                android:id="@+id/buttonCheckIn"
-                                android:layout_width="120dp"
-                                android:layout_height="48dp"
-                                android:layout_marginBottom="8dp"
-                                android:text="Check In"
-                                android:textColor="@color/button_text"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:backgroundTint="@color/dashboard_header_bg"
-                                android:elevation="2dp" />
-
-                            <Button
-                                android:id="@+id/buttonCheckOut"
-                                android:layout_width="120dp"
-                                android:layout_height="48dp"
-                                android:text="Check Out"
-                                android:textColor="@color/button_text"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:backgroundTint="@color/dashboard_header_bg"
-                                android:elevation="2dp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
                     <!-- Duty Schedule Table -->
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -261,12 +212,12 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="12dp" />
 
-                        <!-- Date Field -->
+                        <!-- Start Date Field -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
-                            android:hint="Date"
+                            android:hint="Start Date"
                             app:boxBackgroundMode="filled"
                             app:boxBackgroundColor="@color/dashboard_card_bg"
                             app:boxCornerRadiusTopStart="8dp"
@@ -274,13 +225,46 @@
                             app:boxCornerRadiusBottomStart="8dp"
                             app:boxCornerRadiusBottomEnd="8dp"
                             app:endIconMode="custom"
-                            app:endIconDrawable="@android:drawable/ic_menu_today">
+                            app:endIconDrawable="@android:drawable/ic_menu_today"
+                            app:hintEnabled="true"
+                            app:hintAnimationEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/editTextAbsenceDate"
+                                android:id="@+id/editTextAbsenceStartDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Oct 23 2025"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:minHeight="48dp"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:inputType="none"
+                                android:focusable="false"
+                                android:clickable="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- End Date Field -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:hint="End Date"
+                            app:boxBackgroundMode="filled"
+                            app:boxBackgroundColor="@color/dashboard_card_bg"
+                            app:boxCornerRadiusTopStart="8dp"
+                            app:boxCornerRadiusTopEnd="8dp"
+                            app:boxCornerRadiusBottomStart="8dp"
+                            app:boxCornerRadiusBottomEnd="8dp"
+                            app:endIconMode="custom"
+                            app:endIconDrawable="@android:drawable/ic_menu_today"
+                            app:hintEnabled="true"
+                            app:hintAnimationEnabled="true">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editTextAbsenceEndDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
                                 android:minHeight="48dp"
@@ -303,15 +287,15 @@
                             app:boxCornerRadiusTopStart="8dp"
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
-                            app:boxCornerRadiusBottomEnd="8dp">
+                            app:boxCornerRadiusBottomEnd="8dp"
+                            app:hintEnabled="true"
+                            app:hintAnimationEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/editTextAbsenceReason"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Type here"
                                 android:textColor="@color/text_primary"
-                                android:textColorHint="@color/hint_color"
                                 android:textSize="14sp"
                                 android:minHeight="48dp"
                                 android:paddingStart="16dp"
@@ -321,29 +305,117 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Upload Proof -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Upload Your Proof"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp"
-                            android:layout_marginBottom="8dp" />
-
+                        <!-- Submit Button -->
                         <Button
-                            android:id="@+id/buttonChooseFile"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/buttonSubmitAbsenceRequest"
+                            android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:text="Choose file"
-                            android:textColor="@color/button_text"
-                            android:textSize="14sp"
+                            android:text="Submit Request"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:backgroundTint="@color/dashboard_header_bg"
-                            android:elevation="2dp"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp" />
+                            android:elevation="2dp" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- My Absence Requests Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/dashboard_card_bg"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/dashboard_header_bg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Absence Requests"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Absence Requests RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewAbsenceRequests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="150dp" />
+
+                    <!-- Placeholder when no requests -->
+                    <TextView
+                        android:id="@+id/textViewNoAbsenceRequests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No absence requests yet"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- My Assignments Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/dashboard_card_bg"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/dashboard_header_bg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Assignments"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Assignments RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewMyAssignments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="150dp" />
+
+                    <!-- Placeholder when no assignments -->
+                    <TextView
+                        android:id="@+id/textViewNoAssignments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No assignments yet"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

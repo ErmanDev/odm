@@ -6,11 +6,6 @@
         android:title="@string/menu_dashboard" />
     
     <item
-        android:id="@+id/nav_edit_profile"
-        android:icon="@drawable/ic_edit_profile"
-        android:title="@string/menu_edit_profile" />
-    
-    <item
         android:id="@+id/nav_clock_in_out"
         android:icon="@drawable/ic_clock"
         android:title="@string/menu_clock_in_out" />

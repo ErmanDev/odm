@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 
 import com.example.officerdutymanagement.adapter.DutyScheduleAdapter;
+import com.example.officerdutymanagement.model.DutyAssignment;
 import com.example.officerdutymanagement.model.DutySchedule;
+import com.example.officerdutymanagement.repository.DutyAssignmentRepository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +42,7 @@ public class DutyScheduleActivity extends AppCompatActivity {
     private RecyclerView recyclerViewDutySchedule;
     private DutyScheduleAdapter dutyScheduleAdapter;
     private List<DutySchedule> dutyScheduleList;
+    private DutyAssignmentRepository dutyAssignmentRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class DutyScheduleActivity extends AppCompatActivity {
         initializeViews();
         setupUserInfo();
         setupRecyclerView();
+        initializeRepository();
         loadScheduleData();
         setupDrawer();
         setupClickListeners();
@@ -99,21 +103,64 @@ public class DutyScheduleActivity extends AppCompatActivity {
         recyclerViewDutySchedule.setAdapter(dutyScheduleAdapter);
     }
 
-    private void loadScheduleData() {
-        dutyScheduleList.clear();
-        // Load sample duty schedule data (same as in OfficerActivity)
-        dutyScheduleList.add(new DutySchedule("Aug 21", "12:00 pm - 2:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 22", "12:00 pm - 2:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 23", "12:00 am - 9:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 24", "12:00 am - 8:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 25", "10:00 pm - 2:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 26", "05:00 pm - 2:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 27", "08:00 am - 4:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 28", "09:00 am - 5:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 29", "10:00 am - 6:00 pm"));
-        dutyScheduleList.add(new DutySchedule("Aug 30", "11:00 am - 7:00 pm"));
+    private void initializeRepository() {
+        dutyAssignmentRepository = DutyAssignmentRepository.getInstance();
         
-        dutyScheduleAdapter.notifyDataSetChanged();
+        dutyAssignmentRepository.getDutyAssignmentList().observe(this, assignments -> {
+            if (assignments != null && !assignments.isEmpty()) {
+                // Convert DutyAssignment to DutySchedule format
+                dutyScheduleList.clear();
+                for (DutyAssignment assignment : assignments) {
+                    // Format date
+                    String dateStr = assignment.getDate();
+                    if (dateStr != null) {
+                        try {
+                            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault());
+                            java.util.Date date = inputFormat.parse(dateStr);
+                            if (date != null) {
+                                java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMM dd", java.util.Locale.getDefault());
+                                dateStr = outputFormat.format(date);
+                            }
+                        } catch (Exception e) {
+                            try {
+                                java.text.SimpleDateFormat simpleFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+                                java.util.Date date = simpleFormat.parse(assignment.getDate());
+                                if (date != null) {
+                                    java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMM dd", java.util.Locale.getDefault());
+                                    dateStr = outputFormat.format(date);
+                                }
+                            } catch (Exception ex) {
+                                // Keep original date string
+                            }
+                        }
+                    }
+                    
+                    // Use taskLocation as the time/description
+                    String taskLocation = assignment.getTaskLocation() != null ? assignment.getTaskLocation() : "No location";
+                    dutyScheduleList.add(new DutySchedule(dateStr != null ? dateStr : "--", taskLocation));
+                }
+                dutyScheduleAdapter.notifyDataSetChanged();
+            } else {
+                dutyScheduleList.clear();
+                dutyScheduleAdapter.notifyDataSetChanged();
+            }
+        });
+        
+        dutyAssignmentRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                android.widget.Toast.makeText(this, errorMessage, android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void loadScheduleData() {
+        dutyAssignmentRepository.getMyDutyAssignments();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadScheduleData();
     }
 
     private void setupDrawer() {
@@ -152,11 +199,6 @@ public class DutyScheduleActivity extends AppCompatActivity {
                 Intent intent = new Intent(DutyScheduleActivity.this, OfficerActivity.class);
                 startActivity(intent);
                 finish();
-                drawerLayout.closeDrawer(navigationView);
-                return true;
-            } else if (itemId == R.id.nav_edit_profile) {
-                Intent intent = new Intent(DutyScheduleActivity.this, EditEmployeeProfileActivity.class);
-                startActivity(intent);
                 drawerLayout.closeDrawer(navigationView);
                 return true;
             } else if (itemId == R.id.nav_clock_in_out) {

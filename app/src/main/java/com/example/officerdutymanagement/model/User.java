@@ -14,6 +14,12 @@ public class User {
     
     @SerializedName("role")
     private String role;
+    
+    @SerializedName("fullName")
+    private String fullName;
+    
+    @SerializedName("department")
+    private String department;
 
     public User() {
     }
@@ -59,6 +65,22 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }
 

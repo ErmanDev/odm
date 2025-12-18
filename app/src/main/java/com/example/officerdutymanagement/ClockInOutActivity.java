@@ -51,6 +51,7 @@ public class ClockInOutActivity extends AppCompatActivity {
     private boolean canClockOut = false;
     private android.os.Handler timeUpdateHandler;
     private Runnable timeUpdateRunnable;
+    private int lastCheckedMinute = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,11 +233,24 @@ public class ClockInOutActivity extends AppCompatActivity {
     }
 
     private void startTimeUpdate() {
+        // Initialize lastCheckedMinute to current minute to avoid immediate redundant check
+        Calendar initialCalendar = Calendar.getInstance();
+        lastCheckedMinute = initialCalendar.get(Calendar.MINUTE);
+        
         timeUpdateHandler = new android.os.Handler(android.os.Looper.getMainLooper());
         timeUpdateRunnable = new Runnable() {
             @Override
             public void run() {
                 updateTimeAndDate();
+                
+                // Check if minute changed, then refresh availability
+                Calendar calendar = Calendar.getInstance();
+                int currentMinute = calendar.get(Calendar.MINUTE);
+                if (currentMinute != lastCheckedMinute) {
+                    lastCheckedMinute = currentMinute;
+                    checkClockAvailability();
+                }
+                
                 timeUpdateHandler.postDelayed(this, 1000);
             }
         };
@@ -287,11 +301,6 @@ public class ClockInOutActivity extends AppCompatActivity {
                 Intent intent = new Intent(ClockInOutActivity.this, OfficerActivity.class);
                 startActivity(intent);
                 finish();
-                drawerLayout.closeDrawer(navigationView);
-                return true;
-            } else if (itemId == R.id.nav_edit_profile) {
-                Intent intent = new Intent(ClockInOutActivity.this, EditEmployeeProfileActivity.class);
-                startActivity(intent);
                 drawerLayout.closeDrawer(navigationView);
                 return true;
             } else if (itemId == R.id.nav_clock_in_out) {

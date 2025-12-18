@@ -26,9 +26,15 @@ import com.google.android.material.navigation.NavigationView;
 import com.example.officerdutymanagement.adapter.DutyScheduleAdapter;
 import com.example.officerdutymanagement.adapter.NotificationAdapter;
 import com.example.officerdutymanagement.adapter.OngoingActivityAdapter;
+import com.example.officerdutymanagement.adapter.OfficerAbsenceRequestAdapter;
+import com.example.officerdutymanagement.adapter.OfficerDutyAssignmentAdapter;
+import com.example.officerdutymanagement.model.AbsenceRequest;
+import com.example.officerdutymanagement.model.DutyAssignment;
 import com.example.officerdutymanagement.model.DutySchedule;
 import com.example.officerdutymanagement.model.Notification;
 import com.example.officerdutymanagement.model.OngoingActivity;
+import com.example.officerdutymanagement.repository.AbsenceRequestRepository;
+import com.example.officerdutymanagement.repository.DutyAssignmentRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,10 +58,6 @@ public class OfficerActivity extends AppCompatActivity {
     private TextView textViewGreeting;
     private TextView textViewUserName;
 
-    // Check In/Out
-    private Button buttonCheckIn;
-    private Button buttonCheckOut;
-
     // Duty Schedule
     private RecyclerView recyclerViewDutySchedule;
     private DutyScheduleAdapter dutyScheduleAdapter;
@@ -63,9 +65,13 @@ public class OfficerActivity extends AppCompatActivity {
     private TextView textViewViewFullSchedule;
 
     // Request Absence
-    private EditText editTextAbsenceDate;
+    private EditText editTextAbsenceStartDate;
+    private EditText editTextAbsenceEndDate;
     private EditText editTextAbsenceReason;
-    private Button buttonChooseFile;
+    private Button buttonSubmitAbsenceRequest;
+    private AbsenceRequestRepository absenceRequestRepository;
+    private Calendar startDateCalendar;
+    private Calendar endDateCalendar;
 
     // Notifications
     private RecyclerView recyclerViewNotifications;
@@ -78,6 +84,19 @@ public class OfficerActivity extends AppCompatActivity {
     private OngoingActivityAdapter ongoingActivityAdapter;
     private List<OngoingActivity> ongoingActivityList;
     private Button buttonSeeMoreActivities;
+
+    // My Absence Requests
+    private RecyclerView recyclerViewAbsenceRequests;
+    private OfficerAbsenceRequestAdapter officerAbsenceRequestAdapter;
+    private List<AbsenceRequest> absenceRequestList;
+    private TextView textViewNoAbsenceRequests;
+
+    // My Assignments
+    private RecyclerView recyclerViewMyAssignments;
+    private OfficerDutyAssignmentAdapter officerDutyAssignmentAdapter;
+    private List<DutyAssignment> myAssignmentList;
+    private TextView textViewNoAssignments;
+    private DutyAssignmentRepository dutyAssignmentRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +111,13 @@ public class OfficerActivity extends AppCompatActivity {
         });
 
         initializeViews();
+        initializeRepository();
         setupUserInfo();
         setupRecyclerViews();
+        initializeDutyAssignmentRepository();
         loadData();
+        loadAbsenceRequests();
+        loadMyAssignments();
         setupDrawer();
         setupClickListeners();
     }
@@ -110,18 +133,18 @@ public class OfficerActivity extends AppCompatActivity {
         textViewGreeting = findViewById(R.id.textViewGreeting);
         textViewUserName = findViewById(R.id.textViewUserName);
 
-        // Check In/Out
-        buttonCheckIn = findViewById(R.id.buttonCheckIn);
-        buttonCheckOut = findViewById(R.id.buttonCheckOut);
-
         // Duty Schedule
         recyclerViewDutySchedule = findViewById(R.id.recyclerViewDutySchedule);
         textViewViewFullSchedule = findViewById(R.id.textViewViewFullSchedule);
 
         // Request Absence
-        editTextAbsenceDate = findViewById(R.id.editTextAbsenceDate);
+        editTextAbsenceStartDate = findViewById(R.id.editTextAbsenceStartDate);
+        editTextAbsenceEndDate = findViewById(R.id.editTextAbsenceEndDate);
         editTextAbsenceReason = findViewById(R.id.editTextAbsenceReason);
-        buttonChooseFile = findViewById(R.id.buttonChooseFile);
+        buttonSubmitAbsenceRequest = findViewById(R.id.buttonSubmitAbsenceRequest);
+        
+        startDateCalendar = Calendar.getInstance();
+        endDateCalendar = Calendar.getInstance();
 
         // Notifications
         recyclerViewNotifications = findViewById(R.id.recyclerViewNotifications);
@@ -130,6 +153,67 @@ public class OfficerActivity extends AppCompatActivity {
         // Ongoing Activities
         recyclerViewActivities = findViewById(R.id.recyclerViewActivities);
         buttonSeeMoreActivities = findViewById(R.id.buttonSeeMoreActivities);
+
+        // My Absence Requests
+        recyclerViewAbsenceRequests = findViewById(R.id.recyclerViewAbsenceRequests);
+        textViewNoAbsenceRequests = findViewById(R.id.textViewNoAbsenceRequests);
+
+        // My Assignments
+        recyclerViewMyAssignments = findViewById(R.id.recyclerViewMyAssignments);
+        textViewNoAssignments = findViewById(R.id.textViewNoAssignments);
+    }
+
+    private void initializeRepository() {
+        absenceRequestRepository = AbsenceRequestRepository.getInstance();
+        
+        // Observe absence request creation
+        absenceRequestRepository.getCurrentAbsenceRequest().observe(this, absenceRequest -> {
+            if (absenceRequest != null) {
+                Toast.makeText(this, "Absence request submitted successfully", Toast.LENGTH_SHORT).show();
+                // Clear form
+                editTextAbsenceStartDate.setText("");
+                editTextAbsenceEndDate.setText("");
+                editTextAbsenceReason.setText("");
+                startDateCalendar = Calendar.getInstance();
+                endDateCalendar = Calendar.getInstance();
+                // Refresh absence requests list
+                loadAbsenceRequests();
+            }
+        });
+        
+        // Observe absence requests list
+        absenceRequestRepository.getAbsenceRequestList().observe(this, absenceRequests -> {
+            if (absenceRequests != null && !absenceRequests.isEmpty()) {
+                // Limit to 5 most recent requests for dashboard view
+                List<AbsenceRequest> recentRequests = absenceRequests.size() > 5 
+                    ? absenceRequests.subList(0, 5) 
+                    : absenceRequests;
+                absenceRequestList = recentRequests;
+                officerAbsenceRequestAdapter.updateAbsenceRequestList(absenceRequestList);
+                if (textViewNoAbsenceRequests != null) {
+                    textViewNoAbsenceRequests.setVisibility(View.GONE);
+                }
+                if (recyclerViewAbsenceRequests != null) {
+                    recyclerViewAbsenceRequests.setVisibility(View.VISIBLE);
+                }
+            } else {
+                absenceRequestList = new ArrayList<>();
+                officerAbsenceRequestAdapter.updateAbsenceRequestList(absenceRequestList);
+                if (textViewNoAbsenceRequests != null) {
+                    textViewNoAbsenceRequests.setVisibility(View.VISIBLE);
+                }
+                if (recyclerViewAbsenceRequests != null) {
+                    recyclerViewAbsenceRequests.setVisibility(View.GONE);
+                }
+            }
+        });
+        
+        // Observe error messages
+        absenceRequestRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupUserInfo() {
@@ -171,6 +255,58 @@ public class OfficerActivity extends AppCompatActivity {
         ongoingActivityAdapter = new OngoingActivityAdapter(ongoingActivityList);
         recyclerViewActivities.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewActivities.setAdapter(ongoingActivityAdapter);
+
+        // My Absence Requests RecyclerView
+        absenceRequestList = new ArrayList<>();
+        officerAbsenceRequestAdapter = new OfficerAbsenceRequestAdapter(absenceRequestList);
+        recyclerViewAbsenceRequests.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewAbsenceRequests.setAdapter(officerAbsenceRequestAdapter);
+
+        // My Assignments RecyclerView
+        myAssignmentList = new ArrayList<>();
+        officerDutyAssignmentAdapter = new OfficerDutyAssignmentAdapter(myAssignmentList);
+        recyclerViewMyAssignments.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewMyAssignments.setAdapter(officerDutyAssignmentAdapter);
+    }
+
+    private void initializeDutyAssignmentRepository() {
+        dutyAssignmentRepository = DutyAssignmentRepository.getInstance();
+        
+        dutyAssignmentRepository.getDutyAssignmentList().observe(this, assignments -> {
+            if (assignments != null && !assignments.isEmpty()) {
+                // Limit to 5 most recent assignments for dashboard view
+                List<DutyAssignment> recentAssignments = assignments.size() > 5 
+                    ? assignments.subList(0, 5) 
+                    : assignments;
+                myAssignmentList = recentAssignments;
+                officerDutyAssignmentAdapter.updateDutyAssignmentList(myAssignmentList);
+                if (textViewNoAssignments != null) {
+                    textViewNoAssignments.setVisibility(View.GONE);
+                }
+                if (recyclerViewMyAssignments != null) {
+                    recyclerViewMyAssignments.setVisibility(View.VISIBLE);
+                }
+            } else {
+                myAssignmentList = new ArrayList<>();
+                officerDutyAssignmentAdapter.updateDutyAssignmentList(myAssignmentList);
+                if (textViewNoAssignments != null) {
+                    textViewNoAssignments.setVisibility(View.VISIBLE);
+                }
+                if (recyclerViewMyAssignments != null) {
+                    recyclerViewMyAssignments.setVisibility(View.GONE);
+                }
+            }
+        });
+        
+        dutyAssignmentRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadMyAssignments() {
+        dutyAssignmentRepository.getMyDutyAssignments();
     }
 
     private void loadData() {
@@ -234,11 +370,6 @@ public class OfficerActivity extends AppCompatActivity {
             if (itemId == R.id.nav_dashboard) {
                 drawerLayout.closeDrawer(navigationView);
                 return true;
-            } else if (itemId == R.id.nav_edit_profile) {
-                Intent intent = new Intent(OfficerActivity.this, EditEmployeeProfileActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawer(navigationView);
-                return true;
             } else if (itemId == R.id.nav_clock_in_out) {
                 Intent intent = new Intent(OfficerActivity.this, ClockInOutActivity.class);
                 startActivity(intent);
@@ -283,30 +414,15 @@ public class OfficerActivity extends AppCompatActivity {
             drawerLayout.openDrawer(navigationView);
         });
 
-        buttonCheckIn.setOnClickListener(v -> {
-            // TODO: Implement check in functionality
-            Toast.makeText(this, "Check In", Toast.LENGTH_SHORT).show();
-        });
-
-        buttonCheckOut.setOnClickListener(v -> {
-            // TODO: Implement check out functionality
-            Toast.makeText(this, "Check Out", Toast.LENGTH_SHORT).show();
-        });
-
         textViewViewFullSchedule.setOnClickListener(v -> {
             Intent intent = new Intent(OfficerActivity.this, DutyScheduleActivity.class);
             startActivity(intent);
         });
 
-        editTextAbsenceDate.setOnClickListener(v -> {
-            // TODO: Show date picker
-            Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show();
-        });
-
-        buttonChooseFile.setOnClickListener(v -> {
-            // TODO: Open file picker
-            Toast.makeText(this, "Choose File", Toast.LENGTH_SHORT).show();
-        });
+        editTextAbsenceStartDate.setOnClickListener(v -> showStartDatePicker());
+        editTextAbsenceEndDate.setOnClickListener(v -> showEndDatePicker());
+        
+        buttonSubmitAbsenceRequest.setOnClickListener(v -> submitAbsenceRequest());
 
         buttonSeeMoreNotifications.setOnClickListener(v -> {
             Intent intent = new Intent(OfficerActivity.this, NotificationsActivity.class);
@@ -317,5 +433,115 @@ public class OfficerActivity extends AppCompatActivity {
             Intent intent = new Intent(OfficerActivity.this, OngoingActivitiesActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void showStartDatePicker() {
+        android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
+            this,
+            (view, year, month, dayOfMonth) -> {
+                startDateCalendar.set(Calendar.YEAR, year);
+                startDateCalendar.set(Calendar.MONTH, month);
+                startDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                editTextAbsenceStartDate.setText(dateFormat.format(startDateCalendar.getTime()));
+            },
+            startDateCalendar.get(Calendar.YEAR),
+            startDateCalendar.get(Calendar.MONTH),
+            startDateCalendar.get(Calendar.DAY_OF_MONTH)
+        );
+        // Prevent selecting past dates
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
+    }
+
+    private void showEndDatePicker() {
+        android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
+            this,
+            (view, year, month, dayOfMonth) -> {
+                endDateCalendar.set(Calendar.YEAR, year);
+                endDateCalendar.set(Calendar.MONTH, month);
+                endDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                editTextAbsenceEndDate.setText(dateFormat.format(endDateCalendar.getTime()));
+            },
+            endDateCalendar.get(Calendar.YEAR),
+            endDateCalendar.get(Calendar.MONTH),
+            endDateCalendar.get(Calendar.DAY_OF_MONTH)
+        );
+        // Set minimum date to start date if it's already selected
+        if (editTextAbsenceStartDate.getText().toString().isEmpty()) {
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        } else {
+            datePickerDialog.getDatePicker().setMinDate(startDateCalendar.getTimeInMillis());
+        }
+        datePickerDialog.show();
+    }
+
+    private void submitAbsenceRequest() {
+        // Validate start date
+        if (editTextAbsenceStartDate.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Please select a start date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate end date
+        if (editTextAbsenceEndDate.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Please select an end date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate dates (start <= end)
+        if (startDateCalendar.getTimeInMillis() > endDateCalendar.getTimeInMillis()) {
+            Toast.makeText(this, "Start date must be before or equal to end date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate that start date is not in the past
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        
+        Calendar startDate = (Calendar) startDateCalendar.clone();
+        startDate.set(Calendar.HOUR_OF_DAY, 0);
+        startDate.set(Calendar.MINUTE, 0);
+        startDate.set(Calendar.SECOND, 0);
+        startDate.set(Calendar.MILLISECOND, 0);
+        
+        if (startDate.getTimeInMillis() < today.getTimeInMillis()) {
+            Toast.makeText(this, "Start date cannot be in the past", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate reason
+        String reason = editTextAbsenceReason.getText().toString().trim();
+        if (reason.isEmpty()) {
+            Toast.makeText(this, "Please provide a reason", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create absence request
+        AbsenceRequest absenceRequest = new AbsenceRequest();
+        absenceRequest.setStartDate(startDateCalendar.getTime());
+        absenceRequest.setEndDate(endDateCalendar.getTime());
+        absenceRequest.setReason(reason);
+
+        // Submit request
+        absenceRequestRepository.createAbsenceRequest(absenceRequest);
+    }
+
+    private void loadAbsenceRequests() {
+        absenceRequestRepository.getMyAbsenceRequests();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh absence requests and assignments when activity resumes
+        loadAbsenceRequests();
+        loadMyAssignments();
     }
 }

@@ -14,7 +14,7 @@ import com.example.officerdutymanagement.repository.AuthRepository;
 public class LoginViewModel extends AndroidViewModel {
     
     private static final int MIN_USERNAME_LENGTH = 3;
-    private static final int MIN_PASSWORD_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 3;
 
     private MutableLiveData<LoginState> loginState = new MutableLiveData<>();
     private MutableLiveData<String> usernameError = new MutableLiveData<>();

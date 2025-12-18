@@ -151,11 +151,6 @@ public class OngoingActivitiesActivity extends AppCompatActivity {
                 finish();
                 drawerLayout.closeDrawer(navigationView);
                 return true;
-            } else if (itemId == R.id.nav_edit_profile) {
-                Intent intent = new Intent(OngoingActivitiesActivity.this, EditEmployeeProfileActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawer(navigationView);
-                return true;
             } else if (itemId == R.id.nav_clock_in_out) {
                 Intent intent = new Intent(OngoingActivitiesActivity.this, ClockInOutActivity.class);
                 startActivity(intent);

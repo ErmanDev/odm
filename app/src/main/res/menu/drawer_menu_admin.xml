@@ -11,11 +11,6 @@
         android:title="@string/officer_list_management" />
     
     <item
-        android:id="@+id/nav_edit_profile"
-        android:icon="@drawable/ic_edit_profile"
-        android:title="@string/edit_employee_profile" />
-    
-    <item
         android:id="@+id/nav_duty_assignment"
         android:icon="@drawable/ic_duty_assignment"
         android:title="@string/duty_assignment" />
@@ -34,6 +29,11 @@
         android:id="@+id/nav_notifications"
         android:icon="@drawable/ic_notifications"
         android:title="@string/notifications_alert" />
+    
+    <item
+        android:id="@+id/nav_absence_requests"
+        android:icon="@drawable/ic_edit_profile"
+        android:title="@string/absence_requests" />
     
     <group android:id="@+id/nav_group_logout">
         <item

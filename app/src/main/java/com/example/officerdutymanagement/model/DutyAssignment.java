@@ -21,8 +21,11 @@ public class DutyAssignment {
     @SerializedName("status")
     private String status;
     
-    @SerializedName("officerId")
-    private Integer officerId;
+    @SerializedName("userId")
+    private Integer userId;
+    
+    @SerializedName("user")
+    private User user;
 
     public DutyAssignment() {
     }
@@ -83,12 +86,20 @@ public class DutyAssignment {
         this.status = status;
     }
 
-    public Integer getOfficerId() {
-        return officerId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOfficerId(Integer officerId) {
-        this.officerId = officerId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

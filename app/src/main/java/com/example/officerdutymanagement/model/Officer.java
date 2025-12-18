@@ -9,6 +9,9 @@ public class Officer {
     @SerializedName("name")
     private String name;
     
+    @SerializedName("fullName")
+    private String fullName;
+    
     @SerializedName("department")
     private String department;
     
@@ -53,6 +56,25 @@ public class Officer {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+    
+    // Helper method to get display name (prefer fullName, fallback to name)
+    public String getDisplayName() {
+        if (fullName != null && !fullName.isEmpty()) {
+            return fullName;
+        }
+        if (name != null && !name.isEmpty()) {
+            return name;
+        }
+        return "Unknown";
     }
 }
 

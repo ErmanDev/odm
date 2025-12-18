@@ -33,13 +33,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- Top Row: Hamburger Menu -->
+                <!-- Top Row: Back Button and Hamburger Menu -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="start|center_vertical"
                     android:layout_marginBottom="16dp">
+
+                    <!-- Back Button -->
+                    <ImageView
+                        android:id="@+id/imageViewBack"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:contentDescription="Back"
+                        android:padding="4dp"
+                        android:layout_marginEnd="8dp" />
 
                     <!-- Hamburger Menu -->
                     <ImageView

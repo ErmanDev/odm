@@ -57,6 +57,9 @@ public interface ApiService {
     @GET("duty-assignments")
     Call<ApiResponse<List<DutyAssignment>>> getDutyAssignments();
     
+    @GET("duty-assignments/me")
+    Call<ApiResponse<List<DutyAssignment>>> getMyDutyAssignments();
+    
     @GET("duty-assignments/{id}")
     Call<ApiResponse<DutyAssignment>> getDutyAssignment(@Path("id") int id);
     

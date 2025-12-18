@@ -23,8 +23,11 @@ public class Attendance {
     @SerializedName("status")
     private String status;
     
+    @SerializedName("user")
+    private User user;
+    
     @SerializedName("officer")
-    private Officer officer;
+    private Officer officer; // Keep for backward compatibility
 
     public Attendance() {
     }
@@ -83,6 +86,14 @@ public class Attendance {
 
     public void setOfficer(Officer officer) {
         this.officer = officer;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

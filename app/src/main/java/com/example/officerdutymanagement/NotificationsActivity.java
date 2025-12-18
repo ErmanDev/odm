@@ -154,11 +154,6 @@ public class NotificationsActivity extends AppCompatActivity {
                 finish();
                 drawerLayout.closeDrawer(navigationView);
                 return true;
-            } else if (itemId == R.id.nav_edit_profile) {
-                Intent intent = new Intent(NotificationsActivity.this, EditEmployeeProfileActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawer(navigationView);
-                return true;
             } else if (itemId == R.id.nav_clock_in_out) {
                 Intent intent = new Intent(NotificationsActivity.this, ClockInOutActivity.class);
                 startActivity(intent);

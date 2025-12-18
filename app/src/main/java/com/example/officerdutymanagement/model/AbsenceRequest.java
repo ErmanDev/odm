@@ -8,8 +8,8 @@ public class AbsenceRequest {
     @SerializedName("id")
     private Integer id;
     
-    @SerializedName("officerId")
-    private Integer officerId;
+    @SerializedName("userId")
+    private Integer userId;
     
     @SerializedName("startDate")
     private Date startDate;
@@ -23,8 +23,8 @@ public class AbsenceRequest {
     @SerializedName("status")
     private String status;
     
-    @SerializedName("officer")
-    private Officer officer;
+    @SerializedName("user")
+    private User user;
 
     public AbsenceRequest() {
     }
@@ -43,12 +43,12 @@ public class AbsenceRequest {
         this.id = id;
     }
 
-    public Integer getOfficerId() {
-        return officerId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOfficerId(Integer officerId) {
-        this.officerId = officerId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Date getStartDate() {
@@ -83,12 +83,12 @@ public class AbsenceRequest {
         this.status = status;
     }
 
-    public Officer getOfficer() {
-        return officer;
+    public User getUser() {
+        return user;
     }
 
-    public void setOfficer(Officer officer) {
-        this.officer = officer;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

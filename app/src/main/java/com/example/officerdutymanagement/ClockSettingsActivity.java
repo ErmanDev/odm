@@ -34,6 +34,7 @@ public class ClockSettingsActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView imageViewMenu;
+    private ImageView imageViewBack;
     private TextView textViewClockInStartTime;
     private TextView textViewClockOutStartTime;
     private SwitchCompat switchActive;
@@ -69,10 +70,15 @@ public class ClockSettingsActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         imageViewMenu = findViewById(R.id.imageViewMenu);
+        imageViewBack = findViewById(R.id.imageViewBack);
         textViewClockInStartTime = findViewById(R.id.textViewClockInStartTime);
         textViewClockOutStartTime = findViewById(R.id.textViewClockOutStartTime);
         switchActive = findViewById(R.id.switchActive);
         buttonSave = findViewById(R.id.buttonSave);
+        
+        if (imageViewBack != null) {
+            imageViewBack.setOnClickListener(v -> finish());
+        }
     }
 
     private void initializeRepository() {
@@ -140,9 +146,6 @@ public class ClockSettingsActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_officer_list) {
                 startActivity(new Intent(this, OfficerListManagementActivity.class));
                 finish();
-            } else if (itemId == R.id.nav_edit_profile) {
-                startActivity(new Intent(this, EditEmployeeProfileActivity.class));
-                finish();
             } else if (itemId == R.id.nav_duty_assignment) {
                 startActivity(new Intent(this, DutyAssignmentActivity.class));
                 finish();
@@ -154,6 +157,9 @@ public class ClockSettingsActivity extends AppCompatActivity {
                 finish();
             } else if (itemId == R.id.nav_notifications) {
                 startActivity(new Intent(this, AdminNotificationsActivity.class));
+                finish();
+            } else if (itemId == R.id.nav_absence_requests) {
+                startActivity(new Intent(this, AbsenceRequestsActivity.class));
                 finish();
             } else if (itemId == R.id.nav_logout) {
                 SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);

@@ -44,11 +44,6 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".EditEmployeeProfileActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".PendingActivitiesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -89,12 +84,12 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".DepartmentsActivity"
+            android:name=".ClockSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ClockSettingsActivity"
+            android:name=".AbsenceRequestsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
