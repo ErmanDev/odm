@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+    
+    <item
+        android:id="@+id/nav_officer_list"
+        android:icon="@drawable/ic_officer_list"
+        android:title="@string/officer_list_management" />
+    
+    <item
+        android:id="@+id/nav_edit_profile"
+        android:icon="@drawable/ic_edit_profile"
+        android:title="@string/edit_employee_profile" />
+    
+    <item
+        android:id="@+id/nav_duty_assignment"
+        android:icon="@drawable/ic_duty_assignment"
+        android:title="@string/duty_assignment" />
+    
+    <item
+        android:id="@+id/nav_pending_activities"
+        android:icon="@drawable/ic_pending_activities"
+        android:title="@string/pending_activities" />
+    
+    <item
+        android:id="@+id/nav_attendance_tracking"
+        android:icon="@drawable/ic_attendance_tracking"
+        android:title="@string/attendance_performance_tracking" />
+    
+    <item
+        android:id="@+id/nav_notifications"
+        android:icon="@drawable/ic_notifications"
+        android:title="@string/notifications_alert" />
+    
+    <group android:id="@+id/nav_group_logout">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_logout" />
+    </group>
+</menu>
+

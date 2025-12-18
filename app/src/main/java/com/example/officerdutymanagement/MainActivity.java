@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.officerdutymanagement.viewmodel.DashboardViewModel;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private View cardPendingActivities;
     private View cardAttendanceTracking;
     private View cardNotifications;
+    private View cardClockSettings;
     private Button buttonAllDepartment;
 
     private DashboardViewModel dashboardViewModel;
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         cardPendingActivities = findViewById(R.id.cardPendingActivities);
         cardAttendanceTracking = findViewById(R.id.cardAttendanceTracking);
         cardNotifications = findViewById(R.id.cardNotifications);
+        cardClockSettings = findViewById(R.id.cardClockSettings);
         buttonAllDepartment = findViewById(R.id.buttonAllDepartment);
     }
 
@@ -110,16 +114,17 @@ public class MainActivity extends AppCompatActivity {
         String currentDate = dateFormat.format(new Date());
         textViewDate.setText(currentDate);
         
-        // Set metrics
-        textViewLateCheckInValue.setText(String.valueOf(dashboardViewModel.getLateCheckInCount()));
+        // Set metrics labels
         textViewLateCheckInLabel.setText(R.string.late_check_in);
-        
-        textViewRequestAbsenceValue.setText(String.valueOf(dashboardViewModel.getRequestForAbsenceCount()));
         textViewRequestAbsenceLabel.setText(R.string.request_for_absence);
         textViewRequestAbsenceLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-        
-        textViewPresentTodayValue.setText(String.valueOf(dashboardViewModel.getPresentTodayCount()));
         textViewPresentTodayLabel.setText(R.string.present_today);
+        
+        // Observe LiveData from ViewModel
+        observeViewModel();
+        
+        // Load dashboard stats
+        dashboardViewModel.loadDashboardStats();
         
         // Setup cards with icons and titles
         setupCard(cardOfficerList, R.drawable.ic_officer_list, R.string.officer_list_management);
@@ -128,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         setupCard(cardPendingActivities, R.drawable.ic_pending_activities, R.string.pending_activities);
         setupCard(cardAttendanceTracking, R.drawable.ic_attendance_tracking, R.string.attendance_performance_tracking);
         setupCard(cardNotifications, R.drawable.ic_notifications, R.string.notifications_alert);
+        setupCard(cardClockSettings, R.drawable.ic_clock, R.string.clock_settings);
     }
 
     private void setupCard(View cardView, int iconResId, int titleResId) {
@@ -140,6 +146,39 @@ public class MainActivity extends AppCompatActivity {
         if (titleView != null) {
             titleView.setText(titleResId);
         }
+    }
+
+    private void observeViewModel() {
+        dashboardViewModel.getLateCheckInCount().observe(this, count -> {
+            if (count != null) {
+                textViewLateCheckInValue.setText(String.valueOf(count));
+            }
+        });
+        
+        dashboardViewModel.getRequestForAbsenceCount().observe(this, count -> {
+            if (count != null) {
+                textViewRequestAbsenceValue.setText(String.valueOf(count));
+            }
+        });
+        
+        dashboardViewModel.getPresentTodayCount().observe(this, count -> {
+            if (count != null) {
+                textViewPresentTodayValue.setText(String.valueOf(count));
+            }
+        });
+        
+        dashboardViewModel.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh dashboard stats when activity resumes
+        dashboardViewModel.loadDashboardStats();
     }
 
     private void setupClickListeners() {
@@ -170,6 +209,11 @@ public class MainActivity extends AppCompatActivity {
 
         cardNotifications.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AdminNotificationsActivity.class);
+            startActivity(intent);
+        });
+
+        cardClockSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ClockSettingsActivity.class);
             startActivity(intent);
         });
 

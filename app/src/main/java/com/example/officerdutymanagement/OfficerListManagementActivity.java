@@ -16,15 +16,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.officerdutymanagement.adapter.OfficerAdapter;
 import com.example.officerdutymanagement.adapter.OfficerNameAdapter;
 import com.example.officerdutymanagement.model.Officer;
+import com.example.officerdutymanagement.repository.OfficerRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class OfficerListManagementActivity extends AppCompatActivity {
 
@@ -48,6 +52,7 @@ public class OfficerListManagementActivity extends AppCompatActivity {
     private List<String> officerNameList;
     private List<String> filteredOfficerNameList;
     
+    private OfficerRepository officerRepository;
     private boolean isOfficerView = false;
 
     @Override
@@ -71,6 +76,7 @@ public class OfficerListManagementActivity extends AppCompatActivity {
         });
 
         initializeViews();
+        initializeRepository();
         if (isOfficerView) {
             setupOfficerView();
         } else {
@@ -97,10 +103,47 @@ public class OfficerListManagementActivity extends AppCompatActivity {
         loadOfficerNameData();
     }
 
+    private void initializeRepository() {
+        officerRepository = OfficerRepository.getInstance();
+        
+        // Observe officer list changes
+        officerRepository.getOfficerList().observe(this, officers -> {
+            if (officers != null) {
+                officerList = officers;
+                if (isOfficerView) {
+                    updateOfficerNameList();
+                } else {
+                    updateFilteredOfficerList();
+                    updateDepartmentFilter();
+                }
+            }
+        });
+        
+        // Observe error messages
+        officerRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                android.widget.Toast.makeText(this, errorMessage, android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setupAdminView() {
-        setupDepartmentFilter();
         setupRecyclerView();
+        // Initialize department filter with empty list, will be updated when data loads
+        setupDepartmentFilterInitial();
         loadOfficerData();
+    }
+    
+    private void setupDepartmentFilterInitial() {
+        // Set up with just "All Department" initially
+        String[] departments = { getString(R.string.all_department) };
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            departments
+        );
+        departmentFilter.setAdapter(adapter);
+        departmentFilter.setText(departments[0], false);
     }
 
     private void setupSearchFunctionality() {
@@ -136,22 +179,21 @@ public class OfficerListManagementActivity extends AppCompatActivity {
     }
 
     private void loadOfficerNameData() {
-        // Sample data based on the image - Sanitation Office officers
+        officerRepository.getOfficers();
+    }
+    
+    private void updateOfficerNameList() {
+        if (officerList == null) {
+            return;
+        }
+        
         officerNameList = new ArrayList<>();
-        officerNameList.add("James Villanueva");
-        officerNameList.add("Juan Dela Cruz");
-        officerNameList.add("Juan Dela Cruz");
-        officerNameList.add("Maria Lopez");
-        officerNameList.add("Paul Ramirez");
-        officerNameList.add("Ella Cruz");
-        officerNameList.add("James Villanueva");
-        officerNameList.add("Carla Domingo");
-        officerNameList.add("Rico Santos");
-        officerNameList.add("Leo Garcia");
-        officerNameList.add("Joanne Reyes");
-        officerNameList.add("Mark Castillo");
-        officerNameList.add("Angela Rivera");
-
+        for (Officer officer : officerList) {
+            if (officer.getName() != null && !officer.getName().isEmpty()) {
+                officerNameList.add(officer.getName());
+            }
+        }
+        
         filteredOfficerNameList.clear();
         filteredOfficerNameList.addAll(officerNameList);
         officerNameAdapter.notifyDataSetChanged();
@@ -172,15 +214,25 @@ public class OfficerListManagementActivity extends AppCompatActivity {
         officerNameAdapter.notifyDataSetChanged();
     }
 
-    private void setupDepartmentFilter() {
-        String[] departments = {
-            getString(R.string.all_department),
-            "Sanitation Department",
-            "Maintenance Department",
-            "Administrative Department",
-            "Logistics Department",
-            "Health and Safety Department"
-        };
+    private void updateDepartmentFilter() {
+        if (officerList == null || officerList.isEmpty()) {
+            return;
+        }
+        
+        // Extract unique departments from officer list
+        Set<String> departmentSet = new HashSet<>();
+        for (Officer officer : officerList) {
+            if (officer.getDepartment() != null && !officer.getDepartment().isEmpty()) {
+                departmentSet.add(officer.getDepartment());
+            }
+        }
+        
+        // Create departments array with "All Department" first
+        List<String> departmentsList = new ArrayList<>();
+        departmentsList.add(getString(R.string.all_department));
+        departmentsList.addAll(new ArrayList<>(departmentSet));
+        
+        String[] departments = departmentsList.toArray(new String[0]);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
             this,
@@ -204,33 +256,42 @@ public class OfficerListManagementActivity extends AppCompatActivity {
     }
 
     private void loadOfficerData() {
-        officerList = new ArrayList<>();
-        // Sample data based on the image
-        officerList.add(new Officer("Juan Dela Cruz", "Maintenance Department"));
-        officerList.add(new Officer("Maria Lopez", "Administrative Department"));
-        officerList.add(new Officer("Leo Garcia", "Maintenance Department"));
-        officerList.add(new Officer("Angela Rivera", "Maintenance Department"));
-        officerList.add(new Officer("Rico Santos", "Logistics Department"));
-        officerList.add(new Officer("Rico Santos", "Maintenance Department"));
-        officerList.add(new Officer("Joanne Reyes", "Sanitation Department"));
-
+        officerRepository.getOfficers();
+    }
+    
+    private void updateFilteredOfficerList() {
+        if (officerList == null) {
+            return;
+        }
+        
         filteredOfficerList.clear();
         filteredOfficerList.addAll(officerList);
-        officerAdapter.notifyDataSetChanged();
+        officerAdapter.updateOfficerList(filteredOfficerList);
     }
 
     private void filterOfficers(String department) {
+        if (officerList == null) {
+            return;
+        }
+        
         filteredOfficerList.clear();
         if (department.equals(getString(R.string.all_department))) {
             filteredOfficerList.addAll(officerList);
         } else {
             for (Officer officer : officerList) {
-                if (officer.getDepartment().equals(department)) {
+                if (officer.getDepartment() != null && officer.getDepartment().equals(department)) {
                     filteredOfficerList.add(officer);
                 }
             }
         }
-        officerAdapter.notifyDataSetChanged();
+        officerAdapter.updateOfficerList(filteredOfficerList);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh officer data when activity resumes
+        officerRepository.getOfficers();
     }
 }
 

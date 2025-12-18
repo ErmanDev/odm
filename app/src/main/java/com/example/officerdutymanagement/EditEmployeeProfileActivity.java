@@ -16,15 +16,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 
+import com.example.officerdutymanagement.model.Officer;
+import com.example.officerdutymanagement.model.User;
+import com.example.officerdutymanagement.repository.AuthRepository;
+import com.example.officerdutymanagement.repository.OfficerRepository;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class EditEmployeeProfileActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
+    public static final String EXTRA_OFFICER_ID = "officer_id";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -33,14 +40,13 @@ public class EditEmployeeProfileActivity extends AppCompatActivity {
     private TextView textViewEmployeeName;
     private TextView textViewEmployeeId;
     private EditText editTextName;
-    private EditText editTextAge;
-    private EditText editTextEmployeeId;
-    private EditText editTextPosition;
     private EditText editTextDepartment;
-    private EditText editTextEmail;
-    private EditText editTextAddress;
-    private EditText editTextPhone;
     private Button buttonSaveChanges;
+    
+    private OfficerRepository officerRepository;
+    private AuthRepository authRepository;
+    private Officer currentOfficer;
+    private Integer officerId;
     private boolean isSaved = false;
 
     @Override
@@ -56,7 +62,8 @@ public class EditEmployeeProfileActivity extends AppCompatActivity {
         });
 
         initializeViews();
-        loadEmployeeData();
+        initializeRepository();
+        checkOfficerIdFromIntent();
         setupDrawer();
         setupClickListeners();
     }
@@ -69,29 +76,132 @@ public class EditEmployeeProfileActivity extends AppCompatActivity {
         textViewEmployeeName = findViewById(R.id.textViewEmployeeName);
         textViewEmployeeId = findViewById(R.id.textViewEmployeeId);
         editTextName = findViewById(R.id.editTextName);
-        editTextAge = findViewById(R.id.editTextAge);
-        editTextEmployeeId = findViewById(R.id.editTextEmployeeId);
-        editTextPosition = findViewById(R.id.editTextPosition);
         editTextDepartment = findViewById(R.id.editTextDepartment);
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextAddress = findViewById(R.id.editTextAddress);
-        editTextPhone = findViewById(R.id.editTextPhone);
         buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
     }
 
-    private void loadEmployeeData() {
-        // Sample data - in real app, this would come from intent or database
-        textViewEmployeeName.setText("Juan Dela Cruz");
-        textViewEmployeeId.setText("ID-ACC-0098");
+    private void initializeRepository() {
+        officerRepository = OfficerRepository.getInstance();
+        authRepository = new AuthRepository(this);
         
-        editTextName.setText("Juan Dela Cruz");
-        editTextAge.setText("22");
-        editTextEmployeeId.setText("ACC-0098");
-        editTextPosition.setText("Garbage Collector");
-        editTextDepartment.setText("Sanitation");
-        editTextEmail.setText("mahasau@gmail.com");
-        editTextAddress.setText("P- 13 Hagkol Valencia");
-        editTextPhone.setText("09542518340");
+        // Observe current officer
+        officerRepository.getCurrentOfficer().observe(this, officer -> {
+            if (officer != null) {
+                currentOfficer = officer;
+                if (officerId == null) {
+                    // Initial load - set officerId
+                    officerId = officer.getId();
+                }
+                loadOfficerDataIntoUI(officer);
+                
+                // If we just saved and this is the updated officer, disable inputs
+                if (isSaved && officerId != null && officer.getId() != null && 
+                    officer.getId().equals(officerId)) {
+                    disableAllInputs();
+                    buttonSaveChanges.setText("Done");
+                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        
+        // Observe error messages
+        officerRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                // If save failed, reset isSaved flag
+                if (isSaved) {
+                    isSaved = false;
+                    buttonSaveChanges.setText("Save Changes");
+                }
+            }
+        });
+        
+        // Observe loading state
+        officerRepository.getIsLoading().observe(this, isLoading -> {
+            if (isLoading != null) {
+                buttonSaveChanges.setEnabled(!isLoading);
+                if (isLoading) {
+                    buttonSaveChanges.setText("Saving...");
+                } else {
+                    // Loading finished
+                    if (!isSaved) {
+                        buttonSaveChanges.setText("Save Changes");
+                    } else {
+                        buttonSaveChanges.setText("Done");
+                    }
+                }
+            }
+        });
+    }
+
+    private void checkOfficerIdFromIntent() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(EXTRA_OFFICER_ID)) {
+            // Officer ID provided - load that officer
+            officerId = intent.getIntExtra(EXTRA_OFFICER_ID, -1);
+            if (officerId > 0) {
+                officerRepository.getOfficerById(officerId);
+            }
+        } else {
+            // No officer ID - load logged-in user's officer profile
+            loadMyOfficerProfile();
+        }
+    }
+
+    private void loadMyOfficerProfile() {
+        // Get logged-in user first
+        authRepository.getMe(new AuthRepository.GetMeCallback() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    // Get all officers and find the one with matching userId
+                    officerRepository.getOfficers();
+                    officerRepository.getOfficerList().observe(EditEmployeeProfileActivity.this, new Observer<List<Officer>>() {
+                        @Override
+                        public void onChanged(List<Officer> officers) {
+                            if (officers != null) {
+                                // Find officer with matching userId
+                                for (Officer officer : officers) {
+                                    if (officer.getUserId() != null && officer.getUserId().equals(getUserIdFromUser(user))) {
+                                        officerId = officer.getId();
+                                        currentOfficer = officer;
+                                        loadOfficerDataIntoUI(officer);
+                                        // Remove observer to avoid multiple calls
+                                        officerRepository.getOfficerList().removeObserver(this);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(EditEmployeeProfileActivity.this, "Failed to load user: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Integer getUserIdFromUser(User user) {
+        return user != null ? user.getId() : null;
+    }
+
+    private void loadOfficerDataIntoUI(Officer officer) {
+        if (officer == null) {
+            return;
+        }
+        
+        textViewEmployeeName.setText(officer.getName() != null ? officer.getName() : "");
+        if (officer.getId() != null) {
+            textViewEmployeeId.setText("ID: " + officer.getId());
+        } else {
+            textViewEmployeeId.setText("");
+        }
+        
+        editTextName.setText(officer.getName() != null ? officer.getName() : "");
+        editTextDepartment.setText(officer.getDepartment() != null ? officer.getDepartment() : "");
     }
 
     private void setupDrawer() {
@@ -179,11 +289,8 @@ public class EditEmployeeProfileActivity extends AppCompatActivity {
 
         buttonSaveChanges.setOnClickListener(v -> {
             if (!isSaved) {
-                // Save changes - disable all inputs and change button text
-                disableAllInputs();
-                buttonSaveChanges.setText("Done");
-                isSaved = true;
-                // TODO: Save changes to database/API
+                // Save changes to API
+                saveOfficerProfile();
             } else {
                 // Done button clicked - go back
                 finish();
@@ -191,15 +298,39 @@ public class EditEmployeeProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void saveOfficerProfile() {
+        if (officerId == null || officerId <= 0) {
+            Toast.makeText(this, "Invalid officer ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String name = editTextName.getText().toString().trim();
+        String department = editTextDepartment.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            editTextName.setError("Name is required");
+            return;
+        }
+
+        if (department.isEmpty()) {
+            editTextDepartment.setError("Department is required");
+            return;
+        }
+
+        Officer updatedOfficer = new Officer(name, department);
+        updatedOfficer.setId(officerId);
+        if (currentOfficer != null && currentOfficer.getUserId() != null) {
+            updatedOfficer.setUserId(currentOfficer.getUserId());
+        }
+
+        // Mark as saved before API call - observer will handle UI update on success
+        isSaved = true;
+        officerRepository.updateOfficer(officerId, updatedOfficer);
+    }
+
     private void disableAllInputs() {
         editTextName.setEnabled(false);
-        editTextAge.setEnabled(false);
-        editTextEmployeeId.setEnabled(false);
-        editTextPosition.setEnabled(false);
         editTextDepartment.setEnabled(false);
-        editTextEmail.setEnabled(false);
-        editTextAddress.setEnabled(false);
-        editTextPhone.setEnabled(false);
     }
 }
 

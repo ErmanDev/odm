@@ -100,7 +100,20 @@
             android:text="Not started"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
-            android:layout_marginBottom="48dp" />
+            android:layout_marginBottom="16dp" />
+
+        <!-- Availability Status Text -->
+        <TextView
+            android:id="@+id/textViewAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Checking availability..."
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="32dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
 
         <!-- Clock In/Out Button -->
         <Button

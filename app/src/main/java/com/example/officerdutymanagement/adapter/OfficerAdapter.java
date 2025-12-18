@@ -41,6 +41,11 @@ public class OfficerAdapter extends RecyclerView.Adapter<OfficerAdapter.OfficerV
         return officerList != null ? officerList.size() : 0;
     }
 
+    public void updateOfficerList(List<Officer> newList) {
+        this.officerList = newList;
+        notifyDataSetChanged();
+    }
+
     static class OfficerViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
         TextView textViewDepartment;

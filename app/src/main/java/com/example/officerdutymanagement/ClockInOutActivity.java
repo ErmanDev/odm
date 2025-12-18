@@ -15,7 +15,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 
+import com.example.officerdutymanagement.model.Attendance;
+import com.example.officerdutymanagement.model.ClockAvailability;
+import com.example.officerdutymanagement.model.ClockSettings;
+import com.example.officerdutymanagement.repository.AttendanceRepository;
+import com.example.officerdutymanagement.repository.ClockSettingsRepository;
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +33,6 @@ public class ClockInOutActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
-    private static final String KEY_CLOCK_STATE = "clock_state";
-    private static final String KEY_LAST_CLOCK_IN_TIME = "last_clock_in_time";
-    private static final String CLOCKED_IN = "CLOCKED_IN";
-    private static final String CLOCKED_OUT = "CLOCKED_OUT";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -38,10 +40,15 @@ public class ClockInOutActivity extends AppCompatActivity {
     private TextView textViewCurrentTime;
     private TextView textViewCurrentDate;
     private TextView textViewStatus;
+    private TextView textViewAvailability;
     private Button buttonClockAction;
     private Button buttonBack;
 
+    private AttendanceRepository attendanceRepository;
+    private ClockSettingsRepository clockSettingsRepository;
     private boolean isClockedIn = false;
+    private boolean canClockIn = false;
+    private boolean canClockOut = false;
     private android.os.Handler timeUpdateHandler;
     private Runnable timeUpdateRunnable;
 
@@ -58,7 +65,9 @@ public class ClockInOutActivity extends AppCompatActivity {
         });
 
         initializeViews();
-        loadClockState();
+        initializeRepository();
+        loadCurrentAttendance();
+        checkClockAvailability();
         updateUI();
         setupDrawer();
         setupClickListeners();
@@ -72,37 +81,123 @@ public class ClockInOutActivity extends AppCompatActivity {
         textViewCurrentTime = findViewById(R.id.textViewCurrentTime);
         textViewCurrentDate = findViewById(R.id.textViewCurrentDate);
         textViewStatus = findViewById(R.id.textViewStatus);
+        textViewAvailability = findViewById(R.id.textViewAvailability);
         buttonClockAction = findViewById(R.id.buttonClockAction);
         buttonBack = findViewById(R.id.buttonBack);
     }
 
-    private void loadClockState() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String state = prefs.getString(KEY_CLOCK_STATE, CLOCKED_OUT);
-        isClockedIn = CLOCKED_IN.equals(state);
+    private void initializeRepository() {
+        attendanceRepository = AttendanceRepository.getInstance();
+        clockSettingsRepository = ClockSettingsRepository.getInstance();
+        
+        // Observe current attendance
+        attendanceRepository.getCurrentAttendance().observe(this, attendance -> {
+            if (attendance != null) {
+                isClockedIn = "clocked-in".equals(attendance.getStatus());
+                updateUI();
+            }
+        });
+        
+        // Observe error messages
+        attendanceRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                // Only show real errors, not empty list messages
+                // Empty attendance list is normal if officer hasn't clocked in today
+                if (!errorMessage.equals("Failed to fetch attendance")) {
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Observe clock availability
+        clockSettingsRepository.getClockAvailability().observe(this, availability -> {
+            if (availability != null) {
+                canClockIn = Boolean.TRUE.equals(availability.getCanClockIn());
+                canClockOut = Boolean.TRUE.equals(availability.getCanClockOut());
+                updateAvailabilityUI(availability);
+            }
+        });
+
+        // Observe clock settings error messages
+        clockSettingsRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty() && !errorMessage.contains("404")) {
+                // Don't show 404 errors as they just mean settings aren't configured yet
+                textViewAvailability.setText("Clock settings not configured");
+            }
+        });
     }
 
-    private void saveClockState(boolean clockedIn) {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_CLOCK_STATE, clockedIn ? CLOCKED_IN : CLOCKED_OUT);
+    private void loadCurrentAttendance() {
+        // Fetch today's attendance to determine current state
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String today = dateFormat.format(calendar.getTime());
         
-        if (clockedIn) {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-            editor.putString(KEY_LAST_CLOCK_IN_TIME, timeFormat.format(new Date()));
+        attendanceRepository.getMyAttendance(today, today);
+        
+        // Also observe the attendance list to check for today's record
+        attendanceRepository.getAttendanceList().observe(this, attendanceList -> {
+            if (attendanceList != null && !attendanceList.isEmpty()) {
+                // Find today's attendance record
+                for (Attendance attendance : attendanceList) {
+                    if (attendance.getDate() != null) {
+                        String attendanceDate = dateFormat.format(attendance.getDate());
+                        if (today.equals(attendanceDate) && "clocked-in".equals(attendance.getStatus())) {
+                            isClockedIn = true;
+                            updateUI();
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void checkClockAvailability() {
+        clockSettingsRepository.fetchClockAvailability();
+    }
+
+    private void updateAvailabilityUI(ClockAvailability availability) {
+        if (availability == null) {
+            textViewAvailability.setText("Checking availability...");
+            return;
         }
-        
-        editor.apply();
-        isClockedIn = clockedIn;
+
+        ClockSettings settings = availability.getClockSettings();
+
+        // Before clock-in: only talk about clock-in
+        if (!isClockedIn) {
+            if (Boolean.TRUE.equals(availability.getCanClockIn())) {
+                textViewAvailability.setText("You can clock in now");
+            } else if (settings != null) {
+                textViewAvailability.setText(String.format("Clock-in starts at %s | Clock-out starts at %s",
+                    settings.getClockInStartTime(), settings.getClockOutStartTime()));
+            } else {
+                textViewAvailability.setText("Clock settings not configured");
+            }
+        } else {
+            // After clock-in: only talk about clock-out
+            if (Boolean.TRUE.equals(availability.getCanClockOut())) {
+                textViewAvailability.setText("You can clock out now");
+            } else if (settings != null) {
+                textViewAvailability.setText(String.format("Clock-out starts at %s",
+                    settings.getClockOutStartTime()));
+            } else {
+                textViewAvailability.setText("Clock settings not configured");
+            }
+        }
+
+        updateButtonState();
     }
 
     private void updateUI() {
         if (isClockedIn) {
             buttonClockAction.setText("Clock Out");
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            String lastClockInTime = prefs.getString(KEY_LAST_CLOCK_IN_TIME, "");
-            if (!lastClockInTime.isEmpty()) {
-                textViewStatus.setText("On duty since " + lastClockInTime);
+            Attendance currentAttendance = attendanceRepository.getCurrentAttendance().getValue();
+            if (currentAttendance != null && currentAttendance.getClockIn() != null) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                String clockInTime = timeFormat.format(currentAttendance.getClockIn());
+                textViewStatus.setText("On duty since " + clockInTime);
             } else {
                 textViewStatus.setText("Currently on duty");
             }
@@ -111,7 +206,20 @@ public class ClockInOutActivity extends AppCompatActivity {
             textViewStatus.setText("Not started");
         }
         
+        updateButtonState();
         updateTimeAndDate();
+    }
+
+    private void updateButtonState() {
+        if (isClockedIn) {
+            // Can clock out if availability says so
+            buttonClockAction.setEnabled(canClockOut);
+            buttonClockAction.setAlpha(canClockOut ? 1.0f : 0.5f);
+        } else {
+            // Always allow attempting to clock in; backend will enforce time rules
+            buttonClockAction.setEnabled(true);
+            buttonClockAction.setAlpha(1.0f);
+        }
     }
 
     private void updateTimeAndDate() {
@@ -227,12 +335,13 @@ public class ClockInOutActivity extends AppCompatActivity {
         });
 
         buttonClockAction.setOnClickListener(v -> {
-            boolean newState = !isClockedIn;
-            saveClockState(newState);
-            updateUI();
-            
-            String message = newState ? "You clocked in" : "You clocked out";
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            if (isClockedIn) {
+                // Clock out
+                attendanceRepository.checkOut();
+            } else {
+                // Clock in
+                attendanceRepository.checkIn();
+            }
         });
 
         buttonBack.setOnClickListener(v -> {

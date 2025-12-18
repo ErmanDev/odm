@@ -1,8 +1,18 @@
 package com.example.officerdutymanagement.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+    @SerializedName("id")
+    private Integer id;
+    
+    @SerializedName("username")
     private String username;
+    
+    @SerializedName("password")
     private String password;
+    
+    @SerializedName("role")
     private String role;
 
     public User() {
@@ -17,6 +27,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+    
+    public Integer getId() {
+        return id;
+    }
+    
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUsername() {
