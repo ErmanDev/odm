@@ -89,6 +89,9 @@ public interface ApiService {
     @GET("dashboard/stats")
     Call<ApiResponse<DashboardStats>> getDashboardStats();
     
+    @GET("dashboard/stats/supervisor")
+    Call<ApiResponse<DashboardStats>> getSupervisorDashboardStats();
+    
     // Absence Request endpoints
     @POST("absence-requests")
     Call<ApiResponse<AbsenceRequest>> createAbsenceRequest(@Body AbsenceRequest absenceRequest);

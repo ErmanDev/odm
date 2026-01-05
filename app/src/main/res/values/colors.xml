@@ -3,8 +3,36 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
+    <!-- Luxury Gradient Colors - Lighter -->
+    <color name="gradient_deep_teal">#2A6B75</color>
+    <color name="gradient_emerald">#3A9D8F</color>
+    <color name="gradient_dark_navy">#2A4A55</color>
+    <color name="gradient_teal_mid">#3A7A85</color>
+    <color name="gradient_emerald_light">#4AB5A5</color>
+    
+    <!-- Button Colors - Red/Orange -->
+    <color name="button_red">#FF6B4A</color>
+    <color name="button_orange">#FF8C5A</color>
+    <color name="button_red_dark">#E55A3A</color>
+    
+    <!-- Input Colors - Off White -->
+    <color name="input_off_white">#F5F5F0</color>
+    <color name="input_off_white_dark">#E8E8E3</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent_gold">#D4AF37</color>
+    <color name="accent_silver">#C0C0C0</color>
+    <color name="accent_gold_light">#F4D03F</color>
+    
+    <!-- Glassmorphism Colors -->
+    <color name="glass_white_25">#40FFFFFF</color>
+    <color name="glass_white_15">#26FFFFFF</color>
+    <color name="glass_white_10">#1AFFFFFF</color>
+    <color name="glass_teal_20">#330A4A52</color>
+    <color name="glass_overlay">#1A000000</color>
+    
     <!-- Theme Colors -->
-    <color name="primary_button">#0E4E57</color>
+    <color name="primary_button">#FF6B4A</color>
     <color name="background_white">#FFFFFF</color>
     
     <!-- Additional Colors -->
@@ -15,9 +43,14 @@
     <color name="button_text">#FFFFFFFF</color>
     
     <!-- Dashboard Colors -->
-    <color name="dashboard_header_bg">#0E4E57</color>
+    <color name="dashboard_header_bg">#2A6B75</color>
     <color name="dashboard_card_bg">#FFFFFFFF</color>
     <color name="metric_value_text">#FFFFFFFF</color>
     <color name="metric_label_text">#B3FFFFFF</color>
     <color name="dashboard_background">#F5F5F5</color>
+    
+    <!-- Luxury Text Colors -->
+    <color name="text_luxury_primary">#1A1A1A</color>
+    <color name="text_luxury_secondary">#6B7280</color>
+    <color name="text_on_gradient">#FFFFFF</color>
 </resources>

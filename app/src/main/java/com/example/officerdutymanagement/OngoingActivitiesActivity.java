@@ -20,11 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 
 import com.example.officerdutymanagement.adapter.OngoingActivityAdapter;
+import com.example.officerdutymanagement.model.DutyAssignment;
 import com.example.officerdutymanagement.model.OngoingActivity;
+import com.example.officerdutymanagement.repository.DutyAssignmentRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class OngoingActivitiesActivity extends AppCompatActivity {
 
@@ -40,6 +44,9 @@ public class OngoingActivitiesActivity extends AppCompatActivity {
     private RecyclerView recyclerViewActivities;
     private OngoingActivityAdapter ongoingActivityAdapter;
     private List<OngoingActivity> ongoingActivityList;
+    
+    private DutyAssignmentRepository dutyAssignmentRepository;
+    private List<DutyAssignment> allDutyAssignments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,7 @@ public class OngoingActivitiesActivity extends AppCompatActivity {
         initializeViews();
         setupUserInfo();
         setupRecyclerView();
+        initializeRepository();
         loadActivityData();
         setupDrawer();
         setupClickListeners();
@@ -99,18 +107,79 @@ public class OngoingActivitiesActivity extends AppCompatActivity {
         recyclerViewActivities.setAdapter(ongoingActivityAdapter);
     }
 
-    private void loadActivityData() {
-        ongoingActivityList.clear();
-        // Sample data based on the image
-        ongoingActivityList.add(new OngoingActivity("Aug 21", "Monitoring & assisting participants", "Zone 3", "Not Started", "Start"));
-        ongoingActivityList.add(new OngoingActivity("Aug 22", "Traffic Assistance", "Main Road", "Scheduled", "Ongoing"));
+    private void initializeRepository() {
+        dutyAssignmentRepository = DutyAssignmentRepository.getInstance();
+        allDutyAssignments = new ArrayList<>();
         
-        // Add empty rows (8 empty rows as shown in image)
-        for (int i = 0; i < 8; i++) {
-            ongoingActivityList.add(new OngoingActivity("", "", "", "", ""));
+        dutyAssignmentRepository.getDutyAssignmentList().observe(this, assignments -> {
+            if (assignments != null) {
+                allDutyAssignments.clear();
+                allDutyAssignments.addAll(assignments);
+                convertDutyAssignmentsToOngoingActivities();
+            }
+        });
+        
+        dutyAssignmentRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void convertDutyAssignmentsToOngoingActivities() {
+        ongoingActivityList.clear();
+        
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
+        
+        for (DutyAssignment assignment : allDutyAssignments) {
+            // Only include assignments with "ongoing" or "in-progress" status
+            String status = assignment.getStatus() != null ? assignment.getStatus().toLowerCase() : "";
+            if (status.equals("ongoing") || status.equals("in-progress") || status.equals("in_progress")) {
+                // Format date
+                String dateStr = "--";
+                if (assignment.getDate() != null) {
+                    try {
+                        java.util.Date date = inputFormat.parse(assignment.getDate());
+                        if (date != null) {
+                            dateStr = outputFormat.format(date);
+                        }
+                    } catch (Exception e) {
+                        try {
+                            SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                            java.util.Date date = simpleFormat.parse(assignment.getDate());
+                            if (date != null) {
+                                dateStr = outputFormat.format(date);
+                            }
+                        } catch (Exception ex) {
+                            // Keep default "--"
+                        }
+                    }
+                }
+                
+                String task = assignment.getTaskLocation() != null ? assignment.getTaskLocation() : "No task";
+                String location = assignment.getDepartment() != null ? assignment.getDepartment() : "Unknown";
+                String displayStatus = assignment.getStatus() != null ? assignment.getStatus() : "In Progress";
+                String action = "View Details";
+                
+                ongoingActivityList.add(new OngoingActivity(dateStr, task, location, displayStatus, action));
+            }
         }
         
         ongoingActivityAdapter.notifyDataSetChanged();
+    }
+    
+    private void loadActivityData() {
+        // Fetch all duty assignments from API
+        // Backend will filter by department for supervisors, show all for admins
+        dutyAssignmentRepository.getAllDutyAssignments();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data when activity resumes
+        loadActivityData();
     }
 
     private void setupDrawer() {

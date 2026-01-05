@@ -23,7 +23,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
     private List<Attendance> attendanceList;
     private ClockSettings clockSettings;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     public AttendanceAdapter(List<Attendance> attendanceList) {
         this.attendanceList = attendanceList;

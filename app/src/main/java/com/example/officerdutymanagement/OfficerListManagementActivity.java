@@ -42,6 +42,7 @@ public class OfficerListManagementActivity extends AppCompatActivity {
 
     // Admin views
     private AutoCompleteTextView departmentFilter;
+    private Button buttonCreateUser;
     
     // Officer views
     private EditText editTextSearch;
@@ -62,7 +63,6 @@ public class OfficerListManagementActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView imageViewMenu;
-    private ImageView imageViewBack;
     
     private static final String PREFS_NAME_ADMIN = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
@@ -106,13 +106,13 @@ public class OfficerListManagementActivity extends AppCompatActivity {
             textViewCategoryTitle = findViewById(R.id.textViewCategoryTitle);
         } else {
             departmentFilter = findViewById(R.id.autoCompleteDepartment);
+            buttonCreateUser = findViewById(R.id.buttonCreateUser);
             drawerLayout = findViewById(R.id.drawerLayout);
             navigationView = findViewById(R.id.navigationView);
             imageViewMenu = findViewById(R.id.imageViewMenu);
-            imageViewBack = findViewById(R.id.imageViewBack);
             
-            if (imageViewBack != null) {
-                imageViewBack.setOnClickListener(v -> finish());
+            if (buttonCreateUser != null) {
+                buttonCreateUser.setOnClickListener(v -> showCreateUserDialog());
             }
         }
     }
@@ -380,6 +380,127 @@ public class OfficerListManagementActivity extends AppCompatActivity {
                 finish();
             }
             return true;
+        });
+    }
+
+    private void showCreateUserDialog() {
+        // Create a dialog for creating a new user
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Create New User");
+
+        // Inflate dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_user, null);
+        builder.setView(dialogView);
+
+        // Get dialog views
+        EditText editTextUsername = dialogView.findViewById(R.id.editTextUsername);
+        EditText editTextPassword = dialogView.findViewById(R.id.editTextPassword);
+        EditText editTextFullName = dialogView.findViewById(R.id.editTextFullName);
+        EditText editTextDepartment = dialogView.findViewById(R.id.editTextDepartment);
+        AutoCompleteTextView autoCompleteRole = dialogView.findViewById(R.id.autoCompleteRole);
+        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button buttonCreate = dialogView.findViewById(R.id.buttonCreate);
+
+        // Setup role dropdown based on current user's role
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME_ADMIN, MODE_PRIVATE);
+        String currentUserRole = prefs.getString(KEY_USER_ROLE, "ADMIN");
+        
+        String[] roles;
+        if ("SUPERVISOR".equalsIgnoreCase(currentUserRole) || "supervisor".equalsIgnoreCase(currentUserRole)) {
+            // Supervisors can only create officers
+            roles = new String[]{"Officer"};
+        } else {
+            // Admins can create officers and supervisors (but not other admins)
+            roles = new String[]{"Officer", "Supervisor"};
+        }
+        
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
+        autoCompleteRole.setAdapter(roleAdapter);
+        autoCompleteRole.setText("Officer", false);
+        
+        // Show/hide fields based on role
+        autoCompleteRole.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedRole = roles[position].toLowerCase();
+            if (selectedRole.equals("officer")) {
+                editTextFullName.setVisibility(View.VISIBLE);
+                editTextDepartment.setVisibility(View.VISIBLE);
+            } else if (selectedRole.equals("supervisor")) {
+                editTextFullName.setVisibility(View.GONE);
+                editTextDepartment.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Create dialog
+        android.app.AlertDialog dialog = builder.create();
+
+        buttonCancel.setOnClickListener(v -> dialog.dismiss());
+
+        buttonCreate.setOnClickListener(v -> {
+            String username = editTextUsername.getText().toString().trim();
+            String password = editTextPassword.getText().toString().trim();
+            String fullName = editTextFullName.getText().toString().trim();
+            String department = editTextDepartment.getText().toString().trim();
+            String role = autoCompleteRole.getText().toString().toLowerCase().trim();
+
+            // Validate inputs
+            if (username.isEmpty()) {
+                editTextUsername.setError("Username is required");
+                return;
+            }
+            if (password.isEmpty()) {
+                editTextPassword.setError("Password is required");
+                return;
+            }
+            if (role.equals("officer") && (fullName.isEmpty() || department.isEmpty())) {
+                if (fullName.isEmpty()) editTextFullName.setError("Full name is required");
+                if (department.isEmpty()) editTextDepartment.setError("Department is required");
+                return;
+            }
+            if (role.equals("supervisor") && department.isEmpty()) {
+                editTextDepartment.setError("Department is required");
+                return;
+            }
+
+            // Create user via API
+            createUser(username, password, role, fullName, department);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void createUser(String username, String password, String role, String fullName, String department) {
+        // Use AuthRepository to register the user
+        com.example.officerdutymanagement.repository.AuthRepository authRepository = 
+            new com.example.officerdutymanagement.repository.AuthRepository(this);
+        
+        com.example.officerdutymanagement.model.User user = new com.example.officerdutymanagement.model.User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setRole(role);
+        if (!fullName.isEmpty()) {
+            user.setFullName(fullName);
+        }
+        if (!department.isEmpty()) {
+            user.setDepartment(department);
+        }
+
+        authRepository.register(user, new com.example.officerdutymanagement.repository.AuthRepository.RegisterCallback() {
+            @Override
+            public void onSuccess(com.example.officerdutymanagement.model.LoginResponse loginResponse) {
+                android.widget.Toast.makeText(OfficerListManagementActivity.this, 
+                    "User created successfully", android.widget.Toast.LENGTH_SHORT).show();
+                // Refresh officer list after a short delay to ensure backend has processed
+                recyclerViewOfficers.postDelayed(() -> {
+                    loadOfficerData();
+                }, 500);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                android.widget.Toast.makeText(OfficerListManagementActivity.this, 
+                    "Error: " + errorMessage, android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

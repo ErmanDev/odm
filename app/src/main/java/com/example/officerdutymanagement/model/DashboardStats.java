@@ -11,6 +11,12 @@ public class DashboardStats {
     
     @SerializedName("absenceRequestCount")
     private Integer absenceRequestCount;
+    
+    @SerializedName("activeDutyAssignmentsCount")
+    private Integer activeDutyAssignmentsCount;
+    
+    @SerializedName("totalOfficersCount")
+    private Integer totalOfficersCount;
 
     public DashboardStats() {
     }
@@ -37,6 +43,22 @@ public class DashboardStats {
 
     public void setAbsenceRequestCount(Integer absenceRequestCount) {
         this.absenceRequestCount = absenceRequestCount;
+    }
+
+    public Integer getActiveDutyAssignmentsCount() {
+        return activeDutyAssignmentsCount;
+    }
+
+    public void setActiveDutyAssignmentsCount(Integer activeDutyAssignmentsCount) {
+        this.activeDutyAssignmentsCount = activeDutyAssignmentsCount;
+    }
+
+    public Integer getTotalOfficersCount() {
+        return totalOfficersCount;
+    }
+
+    public void setTotalOfficersCount(Integer totalOfficersCount) {
+        this.totalOfficersCount = totalOfficersCount;
     }
 }
 

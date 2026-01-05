@@ -32,8 +32,10 @@ public class OfficerAdapter extends RecyclerView.Adapter<OfficerAdapter.OfficerV
     @Override
     public void onBindViewHolder(@NonNull OfficerViewHolder holder, int position) {
         Officer officer = officerList.get(position);
-        holder.textViewName.setText(officer.getName());
-        holder.textViewDepartment.setText(officer.getDepartment());
+        // Use display name which prefers fullName, then username, then name
+        String displayName = officer.getDisplayName();
+        holder.textViewName.setText(displayName);
+        holder.textViewDepartment.setText(officer.getDepartment() != null ? officer.getDepartment() : "");
     }
 
     @Override

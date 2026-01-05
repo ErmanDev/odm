@@ -2,8 +2,44 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.OfficerDutyManagement" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/gradient_deep_teal</item>
+        <item name="colorPrimaryVariant">@color/gradient_emerald</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_gold</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:textColorPrimary">@color/text_luxury_primary</item>
+        <item name="android:textColorSecondary">@color/text_luxury_secondary</item>
     </style>
 
     <style name="Theme.OfficerDutyManagement" parent="Base.Theme.OfficerDutyManagement" />
+    
+    <!-- Luxury Text Styles -->
+    <style name="TextAppearance.Luxury" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">@color/text_luxury_primary</item>
+    </style>
+    
+    <style name="TextAppearance.Luxury.Headline" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_luxury_primary</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+    
+    <style name="TextAppearance.Luxury.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_luxury_primary</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+    
+    <style name="TextAppearance.Luxury.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_luxury_primary</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.Luxury.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_luxury_secondary</item>
+    </style>
 </resources>

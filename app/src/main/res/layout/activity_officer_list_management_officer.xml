@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dashboard_background"
+    android:background="@drawable/gradient_background_main"
     tools:context=".OfficerListManagementActivity">
 
     <!-- Header Section -->
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/dashboard_header_bg"
+        android:background="@drawable/gradient_background_header"
         android:padding="24dp"
         android:paddingTop="32dp"
         android:gravity="center_horizontal"

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,10 +22,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 
 import com.example.officerdutymanagement.adapter.PendingActivityAdapter;
+import com.example.officerdutymanagement.model.DutyAssignment;
 import com.example.officerdutymanagement.model.PendingActivity;
+import com.example.officerdutymanagement.model.User;
+import com.example.officerdutymanagement.repository.DutyAssignmentRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class PendingActivitiesActivity extends AppCompatActivity {
 
@@ -37,6 +45,9 @@ public class PendingActivitiesActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageView imageViewMenu;
     private ImageView imageViewBack;
+    
+    private DutyAssignmentRepository dutyAssignmentRepository;
+    private List<DutyAssignment> allDutyAssignments;
     
     private static final String PREFS_NAME = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
@@ -54,8 +65,8 @@ public class PendingActivitiesActivity extends AppCompatActivity {
         });
 
         initializeViews();
+        initializeRepository();
         setupDrawer();
-        setupDepartmentFilter();
         setupRecyclerView();
         loadActivityData();
     }
@@ -73,16 +84,74 @@ public class PendingActivitiesActivity extends AppCompatActivity {
         }
     }
 
+    private void initializeRepository() {
+        dutyAssignmentRepository = DutyAssignmentRepository.getInstance();
+        allDutyAssignments = new ArrayList<>();
+        
+        dutyAssignmentRepository.getDutyAssignmentList().observe(this, assignments -> {
+            if (assignments != null) {
+                allDutyAssignments.clear();
+                allDutyAssignments.addAll(assignments);
+                convertDutyAssignmentsToPendingActivities();
+                setupDepartmentFilter();
+            }
+        });
+        
+        dutyAssignmentRepository.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void convertDutyAssignmentsToPendingActivities() {
+        activityList.clear();
+        
+        for (DutyAssignment assignment : allDutyAssignments) {
+            // Only include assignments with "pending" status
+            if (assignment.getStatus() != null && assignment.getStatus().toLowerCase().equals("pending")) {
+                String officerName = assignment.getOfficerName();
+                if (officerName == null || officerName.isEmpty()) {
+                    // Try to get from user object
+                    if (assignment.getUser() != null) {
+                        officerName = assignment.getUser().getFullName() != null ? 
+                            assignment.getUser().getFullName() : 
+                            assignment.getUser().getUsername();
+                    }
+                }
+                
+                String department = assignment.getDepartment() != null ? assignment.getDepartment() : "Unknown";
+                String activity = assignment.getTaskLocation() != null ? assignment.getTaskLocation() : "No activity";
+                String status = assignment.getStatus() != null ? assignment.getStatus() : "Pending";
+                
+                activityList.add(new PendingActivity(officerName, department, activity, status));
+            }
+        }
+        
+        filteredActivityList.clear();
+        filteredActivityList.addAll(activityList);
+        activityAdapter.notifyDataSetChanged();
+    }
+    
     private void setupDepartmentFilter() {
-        String[] departments = {
-            getString(R.string.all_department),
-            "Sanitation Department",
-            "Maintenance Department",
-            "Administrative Department",
-            "Logistics Department",
-            "Health and Safety Department"
-        };
-
+        // Collect unique departments from the data
+        Set<String> departmentSet = new HashSet<>();
+        departmentSet.add(getString(R.string.all_department));
+        
+        for (PendingActivity activity : activityList) {
+            if (activity.getDepartment() != null && !activity.getDepartment().isEmpty()) {
+                departmentSet.add(activity.getDepartment());
+            }
+        }
+        
+        List<String> departments = new ArrayList<>(departmentSet);
+        java.util.Collections.sort(departments);
+        // Move "All Departments" to the top
+        if (departments.contains(getString(R.string.all_department))) {
+            departments.remove(getString(R.string.all_department));
+            departments.add(0, getString(R.string.all_department));
+        }
+        
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
             this,
             android.R.layout.simple_dropdown_item_1line,
@@ -90,9 +159,9 @@ public class PendingActivitiesActivity extends AppCompatActivity {
         );
 
         departmentFilter.setAdapter(adapter);
-        departmentFilter.setText(departments[0], false);
+        departmentFilter.setText(departments.get(0), false);
         departmentFilter.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedDepartment = departments[position];
+            String selectedDepartment = departments.get(position);
             filterActivities(selectedDepartment);
         });
     }
@@ -105,17 +174,9 @@ public class PendingActivitiesActivity extends AppCompatActivity {
     }
 
     private void loadActivityData() {
-        activityList = new ArrayList<>();
-        // Sample data based on the image
-        activityList.add(new PendingActivity("Juan Dela Cruz", "Sanitation", "Barangay Clean-up", "Pending"));
-        activityList.add(new PendingActivity("Joanne Reyes", "Sanitation", "Barangay Clean-up", "Pending"));
-        activityList.add(new PendingActivity("Maria Lopez", "Sanitation", "Barangay Clean-up", "On going"));
-        activityList.add(new PendingActivity("Leo Garcia", "Sanitation", "Barangay Clean-up", "Pending"));
-        activityList.add(new PendingActivity("Angela Rivera", "Sanitation", "Barangay Clean-up", "Pending"));
-
-        filteredActivityList.clear();
-        filteredActivityList.addAll(activityList);
-        activityAdapter.notifyDataSetChanged();
+        // Fetch all duty assignments from API
+        // Backend will filter by department for supervisors, show all for admins
+        dutyAssignmentRepository.getAllDutyAssignments();
     }
 
     private void filterActivities(String department) {
@@ -123,14 +184,20 @@ public class PendingActivitiesActivity extends AppCompatActivity {
         if (department.equals(getString(R.string.all_department))) {
             filteredActivityList.addAll(activityList);
         } else {
-            String departmentName = department.replace(" Department", "");
             for (PendingActivity activity : activityList) {
-                if (activity.getDepartment().equals(departmentName)) {
+                if (activity.getDepartment() != null && activity.getDepartment().equals(department)) {
                     filteredActivityList.add(activity);
                 }
             }
         }
         activityAdapter.notifyDataSetChanged();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data when activity resumes
+        loadActivityData();
     }
 
     private void setupDrawer() {

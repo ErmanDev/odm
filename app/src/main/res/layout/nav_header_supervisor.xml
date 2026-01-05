@@ -31,7 +31,7 @@
         android:id="@+id/navHeaderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Officer Name"
+        android:text="Supervisor Name"
         android:textColor="@color/text_on_gradient"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -40,6 +40,17 @@
         android:shadowDx="0"
         android:shadowDy="1"
         android:shadowRadius="2" />
+    
+    <TextView
+        android:id="@+id/navHeaderDepartment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Department"
+        android:textColor="@color/text_on_gradient"
+        android:textSize="14sp"
+        android:alpha="0.8"
+        android:layout_marginTop="4dp" />
 
 </LinearLayout>
+
 

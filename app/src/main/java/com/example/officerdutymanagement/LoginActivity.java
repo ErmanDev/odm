@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
     private static final String KEY_USER_ROLE = "user_role";
+    private static final String KEY_USER_DEPARTMENT = "user_department";
 
     private EditText editTextUsername;
     private EditText editTextPassword;
@@ -196,14 +197,26 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString(KEY_ADMIN_NAME, username);
         if (role != null) {
             editor.putString(KEY_USER_ROLE, role);
+            // Save supervisor name and department if role is supervisor
+            if ("supervisor".equalsIgnoreCase(role)) {
+                editor.putString("supervisor_name", username);
+                // Get department from login response if available
+                String department = loginViewModel.getUserDepartment();
+                if (department != null) {
+                    editor.putString(KEY_USER_DEPARTMENT, department);
+                }
+            }
         }
         editor.apply();
         
         // Navigate based on role
         android.content.Intent intent;
-        if ("ADMIN".equals(role)) {
+        if ("admin".equalsIgnoreCase(role) || "ADMIN".equals(role)) {
             // Navigate to Admin Dashboard (MainActivity)
             intent = new android.content.Intent(this, MainActivity.class);
+        } else if ("supervisor".equalsIgnoreCase(role)) {
+            // Navigate to Supervisor Dashboard (SupervisorActivity)
+            intent = new android.content.Intent(this, SupervisorActivity.class);
         } else {
             // Navigate to Officer Dashboard (OfficerActivity)
             intent = new android.content.Intent(this, OfficerActivity.class);

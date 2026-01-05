@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/item_row_background"
-    android:padding="12dp"
+    android:padding="16dp"
     android:minHeight="48dp"
     android:gravity="center_vertical">
 

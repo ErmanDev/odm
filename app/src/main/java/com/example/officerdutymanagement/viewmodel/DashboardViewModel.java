@@ -57,5 +57,29 @@ public class DashboardViewModel extends ViewModel {
     public void loadDashboardStats() {
         dashboardRepository.loadDashboardStats();
     }
+    
+    public void loadSupervisorDashboardStats() {
+        dashboardRepository.loadSupervisorDashboardStats();
+    }
+    
+    public LiveData<Integer> getActiveDutyAssignmentsCount() {
+        MutableLiveData<Integer> activeDutyCount = new MutableLiveData<>(0);
+        dashboardRepository.getDashboardStats().observeForever(stats -> {
+            if (stats != null && stats.getActiveDutyAssignmentsCount() != null) {
+                activeDutyCount.setValue(stats.getActiveDutyAssignmentsCount());
+            }
+        });
+        return activeDutyCount;
+    }
+    
+    public LiveData<Integer> getTotalOfficersCount() {
+        MutableLiveData<Integer> totalOfficersCount = new MutableLiveData<>(0);
+        dashboardRepository.getDashboardStats().observeForever(stats -> {
+            if (stats != null && stats.getTotalOfficersCount() != null) {
+                totalOfficersCount.setValue(stats.getTotalOfficersCount());
+            }
+        });
+        return totalOfficersCount;
+    }
 }
 

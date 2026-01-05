@@ -12,6 +12,12 @@ public class LoginResponse {
     @SerializedName("role")
     private String role;
     
+    @SerializedName("fullName")
+    private String fullName;
+    
+    @SerializedName("department")
+    private String department;
+    
     @SerializedName("token")
     private String token;
 
@@ -48,6 +54,22 @@ public class LoginResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }
 

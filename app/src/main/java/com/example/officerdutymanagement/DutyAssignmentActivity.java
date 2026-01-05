@@ -207,7 +207,7 @@ public class DutyAssignmentActivity extends AppCompatActivity {
         TextView textViewDialogTitle = dialogView.findViewById(R.id.textViewDialogTitle);
         TextInputEditText editTextDate = dialogView.findViewById(R.id.editTextDate);
         AutoCompleteTextView autoCompleteOfficer = dialogView.findViewById(R.id.autoCompleteOfficer);
-        TextInputEditText editTextDepartment = dialogView.findViewById(R.id.editTextDepartment);
+        AutoCompleteTextView autoCompleteDepartment = dialogView.findViewById(R.id.autoCompleteDepartment);
         TextInputEditText editTextTaskLocation = dialogView.findViewById(R.id.editTextTaskLocation);
         AutoCompleteTextView autoCompleteStatus = dialogView.findViewById(R.id.autoCompleteStatus);
         Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
@@ -274,13 +274,44 @@ public class DutyAssignmentActivity extends AppCompatActivity {
             autoCompleteOfficer.setText(assignment.getOfficerName(), false);
         }
         
+        // Setup department dropdown
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String userRole = prefs.getString("user_role", "ADMIN");
+        String userDepartment = prefs.getString("user_department", null);
+        
+        // Collect unique departments
+        java.util.Set<String> departmentSet = new java.util.HashSet<>();
+        for (Officer officer : officerList) {
+            if (officer.getDepartment() != null && !officer.getDepartment().isEmpty()) {
+                // For supervisors, only show their own department
+                if ("supervisor".equalsIgnoreCase(userRole) && userDepartment != null) {
+                    if (userDepartment.equals(officer.getDepartment())) {
+                        departmentSet.add(officer.getDepartment());
+                    }
+                } else {
+                    // For admins, show all departments
+                    departmentSet.add(officer.getDepartment());
+                }
+            }
+        }
+        
+        List<String> departments = new ArrayList<>(departmentSet);
+        java.util.Collections.sort(departments);
+        
+        ArrayAdapter<String> departmentAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                departments
+        );
+        autoCompleteDepartment.setAdapter(departmentAdapter);
+        
         // Auto-fill department when officer is selected
         autoCompleteOfficer.setOnItemClickListener((parent, view, position, id) -> {
             String selectedOfficerName = officerNames.get(position);
             for (Officer officer : officerList) {
                 if (selectedOfficerName.equals(officer.getDisplayName())) {
                     if (officer.getDepartment() != null) {
-                        editTextDepartment.setText(officer.getDepartment());
+                        autoCompleteDepartment.setText(officer.getDepartment(), false);
                     }
                     break;
                 }
@@ -289,7 +320,10 @@ public class DutyAssignmentActivity extends AppCompatActivity {
         
         // Pre-fill department if editing
         if (assignment != null && assignment.getDepartment() != null) {
-            editTextDepartment.setText(assignment.getDepartment());
+            autoCompleteDepartment.setText(assignment.getDepartment(), false);
+        } else if (departments.size() == 1) {
+            // If only one department available, pre-select it
+            autoCompleteDepartment.setText(departments.get(0), false);
         }
         
         // Pre-fill task/location if editing
@@ -333,6 +367,11 @@ public class DutyAssignmentActivity extends AppCompatActivity {
                 return;
             }
             
+            if (autoCompleteDepartment.getText().toString().trim().isEmpty()) {
+                Toast.makeText(this, "Please select a department", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             if (editTextTaskLocation.getText().toString().trim().isEmpty()) {
                 Toast.makeText(this, "Please enter task/location", Toast.LENGTH_SHORT).show();
                 return;
@@ -373,7 +412,7 @@ public class DutyAssignmentActivity extends AppCompatActivity {
             DutyAssignment dutyAssignment = assignment != null ? assignment : new DutyAssignment();
             dutyAssignment.setUserId(userId);
             dutyAssignment.setDate(formatDateForBackend(dateCalendar.getTime()));
-            dutyAssignment.setDepartment(editTextDepartment.getText().toString().trim());
+            dutyAssignment.setDepartment(autoCompleteDepartment.getText().toString().trim());
             dutyAssignment.setTaskLocation(editTextTaskLocation.getText().toString().trim());
             dutyAssignment.setStatus(autoCompleteStatus.getText().toString().trim().toLowerCase());
             

@@ -21,6 +21,7 @@ public class LoginViewModel extends AndroidViewModel {
     private MutableLiveData<String> passwordError = new MutableLiveData<>();
     private MutableLiveData<Boolean> navigateToMain = new MutableLiveData<>();
     private MutableLiveData<String> userRole = new MutableLiveData<>();
+    private MutableLiveData<String> userDepartment = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     private AuthRepository authRepository;
@@ -57,6 +58,10 @@ public class LoginViewModel extends AndroidViewModel {
 
     public LiveData<String> getUserRole() {
         return userRole;
+    }
+
+    public String getUserDepartment() {
+        return userDepartment.getValue();
     }
 
     public LiveData<String> getErrorMessage() {
@@ -106,6 +111,10 @@ public class LoginViewModel extends AndroidViewModel {
                     ? loginResponse.getRole().toUpperCase() 
                     : "OFFICER";
                 userRole.setValue(role);
+                // Store department if available
+                if (loginResponse.getDepartment() != null) {
+                    userDepartment.setValue(loginResponse.getDepartment());
+                }
                 loginState.setValue(LoginState.SUCCESS);
                 navigateToMain.setValue(true);
             }

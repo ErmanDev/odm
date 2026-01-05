@@ -60,5 +60,28 @@ public class DashboardRepository {
             }
         });
     }
+
+    public void loadSupervisorDashboardStats() {
+        isLoading.setValue(true);
+        RetrofitClient.getInstance().getApiService().getSupervisorDashboardStats().enqueue(new Callback<ApiResponse<DashboardStats>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<DashboardStats>> call, Response<ApiResponse<DashboardStats>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    dashboardStats.setValue(response.body().getData());
+                    errorMessage.setValue(null);
+                } else {
+                    String errorMsg = response.body() != null ? response.body().getMessage() : "Failed to load dashboard stats";
+                    errorMessage.setValue(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<DashboardStats>> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
 }
 

@@ -196,7 +196,7 @@ public class ClockInOutActivity extends AppCompatActivity {
             buttonClockAction.setText("Clock Out");
             Attendance currentAttendance = attendanceRepository.getCurrentAttendance().getValue();
             if (currentAttendance != null && currentAttendance.getClockIn() != null) {
-                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
                 String clockInTime = timeFormat.format(currentAttendance.getClockIn());
                 textViewStatus.setText("On duty since " + clockInTime);
             } else {
@@ -225,7 +225,7 @@ public class ClockInOutActivity extends AppCompatActivity {
 
     private void updateTimeAndDate() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault());
         
         textViewCurrentTime.setText(timeFormat.format(calendar.getTime()));

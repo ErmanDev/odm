@@ -3,6 +3,7 @@ package com.example.officerdutymanagement.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,15 +46,23 @@ public class OngoingActivityAdapter extends RecyclerView.Adapter<OngoingActivity
             holder.textViewLocation.setText("");
             holder.textViewStatus.setText("");
             holder.textViewStatus.setBackgroundResource(android.R.color.transparent);
-            holder.textViewAction.setText("");
-            holder.textViewAction.setCompoundDrawables(null, null, null, null);
+            holder.buttonAction.setText("");
+            holder.buttonAction.setVisibility(View.GONE);
         } else {
             // Populated row
             holder.textViewDate.setText(activity.getDate());
             holder.textViewTask.setText(activity.getTask());
             holder.textViewLocation.setText(activity.getLocation());
             holder.textViewStatus.setText(activity.getStatus());
-            holder.textViewAction.setText(activity.getAction());
+            
+            // Set action button text
+            if (activity.getAction() != null && !activity.getAction().isEmpty()) {
+                holder.buttonAction.setText(activity.getAction());
+                holder.buttonAction.setVisibility(View.VISIBLE);
+            } else {
+                holder.buttonAction.setText("View Details");
+                holder.buttonAction.setVisibility(View.VISIBLE);
+            }
 
             // Set status background based on status value
             if ("Not Started".equals(activity.getStatus())) {
@@ -62,18 +71,6 @@ public class OngoingActivityAdapter extends RecyclerView.Adapter<OngoingActivity
                 holder.textViewStatus.setBackgroundResource(R.drawable.status_ongoing_bg);
             } else {
                 holder.textViewStatus.setBackgroundResource(R.drawable.status_pending_bg);
-            }
-
-            // Add dropdown icon to Action if not empty
-            if (activity.getAction() != null && !activity.getAction().isEmpty()) {
-                android.graphics.drawable.Drawable dropdownIcon = ContextCompat.getDrawable(
-                    holder.itemView.getContext(), android.R.drawable.arrow_down_float);
-                if (dropdownIcon != null) {
-                    dropdownIcon.setTint(ContextCompat.getColor(
-                        holder.itemView.getContext(), R.color.dashboard_header_bg));
-                    holder.textViewAction.setCompoundDrawablesWithIntrinsicBounds(null, null, dropdownIcon, null);
-                    holder.textViewAction.setCompoundDrawablePadding(8);
-                }
             }
         }
     }
@@ -88,7 +85,7 @@ public class OngoingActivityAdapter extends RecyclerView.Adapter<OngoingActivity
         TextView textViewTask;
         TextView textViewLocation;
         TextView textViewStatus;
-        TextView textViewAction;
+        Button buttonAction;
 
         OngoingActivityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,7 +93,7 @@ public class OngoingActivityAdapter extends RecyclerView.Adapter<OngoingActivity
             textViewTask = itemView.findViewById(R.id.textViewActivityTask);
             textViewLocation = itemView.findViewById(R.id.textViewActivityLocation);
             textViewStatus = itemView.findViewById(R.id.textViewActivityStatus);
-            textViewAction = itemView.findViewById(R.id.textViewActivityAction);
+            buttonAction = itemView.findViewById(R.id.textViewActivityAction);
         }
     }
 }

@@ -4,32 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+        android:padding="28dp"
+        android:background="@color/dashboard_card_bg">
 
     <TextView
         android:id="@+id/textViewDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Assign New Duty"
-        android:textColor="@color/text_primary"
-        android:textSize="20sp"
+        android:textColor="@color/text_luxury_primary"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:letterSpacing="0.01"
+        android:layout_marginBottom="20dp" />
 
     <!-- Date Field -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:hint="Date"
         app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/dashboard_card_bg"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxBackgroundColor="@color/input_off_white"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
         app:endIconMode="custom"
         app:endIconDrawable="@android:drawable/ic_menu_today"
+        app:hintTextColor="@color/text_primary"
         app:hintEnabled="true"
         app:hintAnimationEnabled="true">
 
@@ -52,15 +55,16 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:hint="Officer"
         app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/dashboard_card_bg"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxBackgroundColor="@color/input_off_white"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
         app:endIconMode="dropdown_menu"
+        app:hintTextColor="@color/text_primary"
         app:hintEnabled="true"
         app:hintAnimationEnabled="true">
 
@@ -84,27 +88,32 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:hint="Department"
         app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/dashboard_card_bg"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxBackgroundColor="@color/input_off_white"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:endIconMode="dropdown_menu"
+        app:hintTextColor="@color/text_primary"
         app:hintEnabled="true"
         app:hintAnimationEnabled="true">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextDepartment"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteDepartment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"
+            android:clickable="true"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:minHeight="48dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text" />
+            android:gravity="center_vertical" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,14 +121,15 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:hint="Task/Location"
         app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/dashboard_card_bg"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxBackgroundColor="@color/input_off_white"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:hintTextColor="@color/text_primary"
         app:hintEnabled="true"
         app:hintAnimationEnabled="true">
 
@@ -143,12 +153,13 @@
         android:layout_marginBottom="16dp"
         android:hint="Status"
         app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/dashboard_card_bg"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxBackgroundColor="@color/input_off_white"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
         app:endIconMode="dropdown_menu"
+        app:hintTextColor="@color/text_primary"
         app:hintEnabled="true"
         app:hintAnimationEnabled="true">
 
@@ -195,8 +206,8 @@
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:backgroundTint="@color/dashboard_header_bg"
-            android:elevation="2dp"
+            android:background="@drawable/gradient_button_primary"
+            android:elevation="8dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp" />
 

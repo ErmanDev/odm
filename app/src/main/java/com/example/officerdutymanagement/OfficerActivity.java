@@ -77,13 +77,13 @@ public class OfficerActivity extends AppCompatActivity {
     private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
     private List<Notification> notificationList;
-    private Button buttonSeeMoreNotifications;
+    private TextView buttonSeeMoreNotifications;
 
     // Ongoing Activities
     private RecyclerView recyclerViewActivities;
     private OngoingActivityAdapter ongoingActivityAdapter;
     private List<OngoingActivity> ongoingActivityList;
-    private Button buttonSeeMoreActivities;
+    private TextView buttonSeeMoreActivities;
 
     // My Absence Requests
     private RecyclerView recyclerViewAbsenceRequests;

@@ -5,25 +5,45 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="12dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
     <TextView
         android:id="@+id/textViewMetricValue"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="00"
+        android:text="0"
         android:textColor="@color/metric_value_text"
         android:textSize="28sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="none"
+        android:letterSpacing="0.02"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="4" />
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/dashboard_header_bg" />
 
     <TextView
         android:id="@+id/textViewMetricLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="Label"
         android:textColor="@color/metric_label_text"
-        android:textSize="12sp" />
+        android:textSize="11sp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:letterSpacing="0.01" />
 
 </LinearLayout>
 

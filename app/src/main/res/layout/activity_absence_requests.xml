@@ -12,7 +12,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dashboard_background">
+        android:background="@drawable/gradient_background_main">
 
         <!-- Header -->
         <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/dashboard_header_bg"
+            android:background="@drawable/gradient_background_header"
             android:padding="24dp"
             android:paddingTop="32dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
                     android:id="@+id/imageViewBack"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_revert"
+                    android:src="@drawable/ic_back_arrow"
                     android:contentDescription="Back"
                     android:padding="4dp"
                     android:layout_marginEnd="8dp" />
@@ -148,9 +148,11 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/dashboard_card_bg"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_admin"
-        app:menu="@menu/drawer_menu_admin" />
+        app:menu="@menu/drawer_menu_admin"
+        app:itemTextColor="@color/black" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
 

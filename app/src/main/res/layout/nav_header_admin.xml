@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:orientation="vertical"
-    android:background="@color/dashboard_header_bg"
+    android:background="@drawable/gradient_nav_drawer"
     android:padding="24dp"
     android:paddingTop="32dp"
     android:gravity="bottom">
@@ -22,18 +22,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Good Morning"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:layout_marginBottom="4dp" />
+        android:textColor="@color/text_on_gradient"
+        android:textSize="15sp"
+        android:alpha="0.9"
+        android:layout_marginBottom="6dp" />
 
     <TextView
         android:id="@+id/navHeaderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Admin Name"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textColor="@color/text_on_gradient"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.01"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="2" />
 
 </LinearLayout>
 

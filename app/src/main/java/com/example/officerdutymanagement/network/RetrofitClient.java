@@ -9,8 +9,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.util.concurrent.TimeUnit;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://10.0.2.2:3000/api/"; // Use 10.0.2.2 for Android emulator
-    // For physical device, use your computer's IP address: "http://192.168.x.x:3000/api/"
+    private static final String BASE_URL = "http://10.0.2.2:3000/api/";
+    
     
     private static RetrofitClient instance;
     private ApiService apiService;
