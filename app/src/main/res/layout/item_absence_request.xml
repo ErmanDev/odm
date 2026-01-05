@@ -7,17 +7,16 @@
     android:layout_marginEnd="16dp"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="10dp"
-    app:cardBackgroundColor="@color/glass_white_25"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/glass_white_15">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/dashboard_card_bg"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <!-- Header Row: Officer Name and Status Badge -->
         <LinearLayout
@@ -33,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Officer Name"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text_luxury_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -45,32 +44,47 @@
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:background="@drawable/badge_green_background" />
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:background="@drawable/status_pending_bg" />
         </LinearLayout>
 
         <!-- Date Range -->
-        <TextView
-            android:id="@+id/textViewDateRange"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date Range"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅"
+                android:textSize="14sp"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/textViewDateRange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Date Range"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <!-- Reason -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reason:"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/text_luxury_primary"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
+            android:layout_marginBottom="6dp" />
 
         <TextView
             android:id="@+id/textViewReason"
@@ -78,7 +92,8 @@
             android:layout_height="wrap_content"
             android:text="Reason text here"
             android:textColor="@color/text_secondary"
-            android:textSize="13sp"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
             android:layout_marginBottom="12dp" />
 
         <!-- Action Buttons (only for pending) -->
@@ -90,32 +105,36 @@
             android:gravity="end"
             android:visibility="gone">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonReject"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:text="Reject"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:backgroundTint="#F44336"
-                android:elevation="2dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_marginEnd="8dp" />
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="8dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonApprove"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:text="Approve"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:backgroundTint="#4CAF50"
-                android:elevation="2dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp" />
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                app:cornerRadius="8dp" />
 
         </LinearLayout>
 

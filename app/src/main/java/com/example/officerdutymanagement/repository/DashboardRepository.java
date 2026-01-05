@@ -68,11 +68,41 @@ public class DashboardRepository {
             public void onResponse(Call<ApiResponse<DashboardStats>> call, Response<ApiResponse<DashboardStats>> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    dashboardStats.setValue(response.body().getData());
-                    errorMessage.setValue(null);
+                    DashboardStats stats = response.body().getData();
+                    if (stats != null) {
+                        dashboardStats.setValue(stats);
+                        errorMessage.setValue(null);
+                    } else {
+                        // If stats is null, create default stats with zeros
+                        DashboardStats defaultStats = new DashboardStats();
+                        defaultStats.setLateCheckInCount(0);
+                        defaultStats.setPresentTodayCount(0);
+                        defaultStats.setAbsenceRequestCount(0);
+                        defaultStats.setActiveDutyAssignmentsCount(0);
+                        defaultStats.setTotalOfficersCount(0);
+                        dashboardStats.setValue(defaultStats);
+                        errorMessage.setValue(null);
+                    }
                 } else {
-                    String errorMsg = response.body() != null ? response.body().getMessage() : "Failed to load dashboard stats";
-                    errorMessage.setValue(errorMsg);
+                    // Handle different error codes
+                    if (response.code() == 403) {
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Access denied. Supervisor must have a department assigned.";
+                        errorMessage.setValue(errorMsg);
+                    } else if (response.code() == 401) {
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Authentication failed. Please login again.";
+                        errorMessage.setValue(errorMsg);
+                    } else {
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Failed to load dashboard stats (Error: " + response.code() + ")";
+                        errorMessage.setValue(errorMsg);
+                    }
+                    // Set default stats on error
+                    DashboardStats defaultStats = new DashboardStats();
+                    defaultStats.setLateCheckInCount(0);
+                    defaultStats.setPresentTodayCount(0);
+                    defaultStats.setAbsenceRequestCount(0);
+                    defaultStats.setActiveDutyAssignmentsCount(0);
+                    defaultStats.setTotalOfficersCount(0);
+                    dashboardStats.setValue(defaultStats);
                 }
             }
 
@@ -80,6 +110,14 @@ public class DashboardRepository {
             public void onFailure(Call<ApiResponse<DashboardStats>> call, Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Network error: " + t.getMessage());
+                // Set default stats on network error
+                DashboardStats defaultStats = new DashboardStats();
+                defaultStats.setLateCheckInCount(0);
+                defaultStats.setPresentTodayCount(0);
+                defaultStats.setAbsenceRequestCount(0);
+                defaultStats.setActiveDutyAssignmentsCount(0);
+                defaultStats.setTotalOfficersCount(0);
+                dashboardStats.setValue(defaultStats);
             }
         });
     }

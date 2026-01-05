@@ -1,55 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:layout_marginBottom="8dp"
-    android:background="@drawable/item_row_background">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/dashboard_card_bg"
+    app:strokeWidth="0dp">
 
-    <!-- Header Row: Date Range and Status Badge -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/textViewDateRange"
-            android:layout_width="0dp"
+        <!-- Header Row: Date Range and Status Badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Date Range"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
 
+            <TextView
+                android:id="@+id/textViewDateRange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Date Range"
+                android:textColor="@color/text_luxury_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PENDING"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:background="@drawable/status_pending_bg" />
+        </LinearLayout>
+
+        <!-- Reason -->
         <TextView
-            android:id="@+id/textViewStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PENDING"
-            android:textColor="@color/white"
-            android:textSize="10sp"
+            android:text="Reason:"
+            android:textColor="@color/text_luxury_primary"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:background="@drawable/status_pending_bg" />
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textViewReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reason text here"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp" />
+
     </LinearLayout>
 
-    <!-- Reason -->
-    <TextView
-        android:id="@+id/textViewReason"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Reason text here"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp"
-        android:maxLines="2"
-        android:ellipsize="end" />
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 

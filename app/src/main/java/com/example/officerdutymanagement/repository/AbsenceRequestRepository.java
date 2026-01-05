@@ -105,15 +105,30 @@ public class AbsenceRequestRepository {
             public void onResponse(Call<ApiResponse<List<AbsenceRequest>>> call, Response<ApiResponse<List<AbsenceRequest>>> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    absenceRequestList.setValue(response.body().getData());
+                    List<AbsenceRequest> requests = response.body().getData();
+                    if (requests != null && !requests.isEmpty()) {
+                        absenceRequestList.setValue(requests);
+                    } else {
+                        absenceRequestList.setValue(new java.util.ArrayList<>());
+                    }
                     errorMessage.setValue(null);
                 } else {
-                    if (response.code() == 404 || (response.body() != null && response.body().getData() != null && response.body().getData().isEmpty())) {
+                    // Handle different error codes
+                    if (response.code() == 403) {
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Access denied. You don't have permission to view absence requests.";
+                        errorMessage.setValue(errorMsg);
+                        absenceRequestList.setValue(new java.util.ArrayList<>());
+                    } else if (response.code() == 401) {
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Authentication failed. Please login again.";
+                        errorMessage.setValue(errorMsg);
+                        absenceRequestList.setValue(new java.util.ArrayList<>());
+                    } else if (response.code() == 404 || (response.body() != null && response.body().getData() != null && response.body().getData().isEmpty())) {
                         absenceRequestList.setValue(new java.util.ArrayList<>());
                         errorMessage.setValue(null);
                     } else {
-                        String errorMsg = response.body() != null ? response.body().getMessage() : "Failed to fetch absence requests";
+                        String errorMsg = response.body() != null ? response.body().getMessage() : "Failed to fetch absence requests (Error: " + response.code() + ")";
                         errorMessage.setValue(errorMsg);
+                        absenceRequestList.setValue(new java.util.ArrayList<>());
                     }
                 }
             }
@@ -122,6 +137,7 @@ public class AbsenceRequestRepository {
             public void onFailure(Call<ApiResponse<List<AbsenceRequest>>> call, Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Network error: " + t.getMessage());
+                absenceRequestList.setValue(new java.util.ArrayList<>());
             }
         });
     }

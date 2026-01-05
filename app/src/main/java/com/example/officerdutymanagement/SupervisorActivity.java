@@ -125,7 +125,7 @@ public class SupervisorActivity extends AppCompatActivity {
         textViewDate.setText(currentDate);
         
         // Set metrics labels
-        textViewPendingLeaveLabel.setText("Pending Leave");
+        textViewPendingLeaveLabel.setText("Pending Absence");
         textViewPendingLeaveLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
         textViewActiveDutyLabel.setText("Active Duty");
         textViewActiveDutyLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
@@ -143,7 +143,7 @@ public class SupervisorActivity extends AppCompatActivity {
         setupCard(cardDutyScheduleManagement, R.drawable.ic_schedule, "Duty Schedule");
         setupCard(cardOfficerAssignment, R.drawable.ic_duty_assignment, "Officer Assignment");
         setupCard(cardAttendanceMonitoring, R.drawable.ic_attendance_tracking, "Attendance");
-        setupCard(cardLeaveRequests, R.drawable.ic_edit_profile, "Leave Requests");
+        setupCard(cardLeaveRequests, R.drawable.ic_edit_profile, "Absence Requests");
         setupCard(cardOfficerManagement, R.drawable.ic_officer_list, "Officer Management");
     }
 

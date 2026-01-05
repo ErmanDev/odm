@@ -33,6 +33,9 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "OfficerDutyPrefs";
     private static final String KEY_ADMIN_NAME = "admin_name";
+    private static final String KEY_SUPERVISOR_NAME = "supervisor_name";
+    private static final String KEY_USER_ROLE = "user_role";
+    private static final String KEY_USER_DEPARTMENT = "user_department";
 
     private RecyclerView recyclerViewAbsenceRequests;
     private AbsenceRequestAdapter absenceRequestAdapter;
@@ -43,6 +46,7 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageView imageViewMenu;
     private ImageView imageViewBack;
+    private boolean isSupervisor = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +60,19 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
             return insets;
         });
 
+        checkUserRole();
         initializeViews();
         setupDrawer();
         setupStatusFilter();
         setupRecyclerView();
         initializeRepository();
         loadAbsenceRequests(null);
+    }
+
+    private void checkUserRole() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String userRole = prefs.getString(KEY_USER_ROLE, "admin");
+        isSupervisor = "supervisor".equalsIgnoreCase(userRole);
     }
 
     private void initializeViews() {
@@ -83,11 +94,27 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
             return;
         }
 
+        // Set appropriate menu and header based on user role
+        if (isSupervisor) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.drawer_menu_supervisor);
+            // Remove existing header if any and add supervisor header
+            if (navigationView.getHeaderCount() > 0) {
+                navigationView.removeHeaderView(navigationView.getHeaderView(0));
+            }
+            navigationView.inflateHeaderView(R.layout.nav_header_supervisor);
+        } else {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.drawer_menu_admin);
+            // Header is already set in XML for admin, just update content
+        }
+
         // Setup drawer header with user info
         View headerView = navigationView.getHeaderView(0);
         if (headerView != null) {
             TextView navHeaderGreeting = headerView.findViewById(R.id.navHeaderGreeting);
             TextView navHeaderName = headerView.findViewById(R.id.navHeaderName);
+            TextView navHeaderDepartment = headerView.findViewById(R.id.navHeaderDepartment);
 
             if (navHeaderGreeting != null) {
                 java.util.Calendar calendar = java.util.Calendar.getInstance();
@@ -105,8 +132,19 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
 
             if (navHeaderName != null) {
                 SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                String userName = prefs.getString(KEY_ADMIN_NAME, "Admin");
+                String userName;
+                if (isSupervisor) {
+                    userName = prefs.getString(KEY_SUPERVISOR_NAME, "Supervisor");
+                } else {
+                    userName = prefs.getString(KEY_ADMIN_NAME, "Admin");
+                }
                 navHeaderName.setText(userName);
+            }
+
+            if (navHeaderDepartment != null && isSupervisor) {
+                SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                String department = prefs.getString(KEY_USER_DEPARTMENT, "Department");
+                navHeaderDepartment.setText(department);
             }
         }
 
@@ -117,25 +155,32 @@ public class AbsenceRequestsActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(navigationView);
 
             if (itemId == R.id.nav_home) {
-                startActivity(new Intent(this, MainActivity.class));
+                if (isSupervisor) {
+                    startActivity(new Intent(this, SupervisorActivity.class));
+                } else {
+                    startActivity(new Intent(this, MainActivity.class));
+                }
                 finish();
-            } else if (itemId == R.id.nav_officer_list) {
+            } else if (itemId == R.id.nav_officer_list || itemId == R.id.nav_officer_management) {
                 startActivity(new Intent(this, OfficerListManagementActivity.class));
                 finish();
-            } else if (itemId == R.id.nav_duty_assignment) {
+            } else if (itemId == R.id.nav_duty_assignment || itemId == R.id.nav_officer_assignment) {
                 startActivity(new Intent(this, DutyAssignmentActivity.class));
                 finish();
             } else if (itemId == R.id.nav_pending_activities) {
                 startActivity(new Intent(this, PendingActivitiesActivity.class));
                 finish();
-            } else if (itemId == R.id.nav_attendance_tracking) {
+            } else if (itemId == R.id.nav_attendance_tracking || itemId == R.id.nav_attendance_monitoring) {
                 startActivity(new Intent(this, AttendanceTrackingActivity.class));
                 finish();
             } else if (itemId == R.id.nav_notifications) {
                 startActivity(new Intent(this, AdminNotificationsActivity.class));
                 finish();
-            } else if (itemId == R.id.nav_absence_requests) {
+            } else if (itemId == R.id.nav_absence_requests || itemId == R.id.nav_leave_requests) {
                 // Already on this screen, just close drawer
+            } else if (itemId == R.id.nav_duty_schedule_management) {
+                // TODO: Navigate to DutyScheduleManagementActivity when created
+                Toast.makeText(this, "Duty Schedule Management - Coming Soon", Toast.LENGTH_SHORT).show();
             } else if (itemId == R.id.nav_logout) {
                 SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 prefs.edit().clear().apply();

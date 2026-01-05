@@ -85,7 +85,7 @@
                 android:orientation="horizontal"
                 android:weightSum="4">
 
-                <!-- Pending Leave Requests Metric -->
+                <!-- Pending Absence Requests Metric -->
                 <include
                     android:id="@+id/metricPendingLeave"
                     layout="@layout/item_metric_card" />
